@@ -1,0 +1,35 @@
+/* Simple navbar/sidebar styles for marketplace pages */
+.page-shell{display:flex;min-height:100vh}
+.sidebar{width:260px;padding:24px;background:#121827;color:#fff;display:flex;flex-direction:column}
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+.logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#1f6feb,#00b39f);display:flex;align-items:center;justify-content:center;font-weight:700}
+.nav-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.nav-link{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;color:rgba(255,255,255,0.9);text-decoration:none}
+.nav-link:hover{background:rgba(255,255,255,0.04)}
+.nav-link.active{background:linear-gradient(135deg,#1f6feb,#0066ff);font-weight:600}
+.spacer{flex:1}
+.user-card{display:flex;gap:12px;align-items:center;margin-top:14px}
+.user-card .avatar{width:44px;height:44px;border-radius:50%;background:#2b6ef6;display:flex;align-items:center;justify-content:center}
+
+.main-content{flex:1;padding:22px;background:#f5f7fb}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.search-large{display:flex;align-items:center;gap:10px;background:#fff;padding:10px;border-radius:12px;box-shadow:0 2px 8px rgba(2,6,23,0.04)}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.btn{padding:8px 12px;border-radius:8px;border:1px solid #e6e8f0;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(135deg,#1f6feb,#0066ff);color:#fff;border:none}
+.profile-chip{display:flex;align-items:center;gap:8px;border-radius:12px;padding:6px;background:#fff}
+.profile-avatar{width:36px;height:36px;border-radius:50%;background:#2b6ef6;color:#fff;display:flex;align-items:center;justify-content:center}
+.profile-menu{position:absolute;right:24px;top:72px;background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(2,6,23,0.08);padding:12px;display:none}
+.profile-menu.open{display:block}
+
+/* market grid */
+.market-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.market-card{background:#fff;padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.04)}
+.status-pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px}
+.status-pill.open{background:#e6ffef;color:#0f5132}
+.status-pill.in-progress{background:#eef2ff;color:#1f3a8a}
+.status-pill.resolved{background:#f1f5f9;color:#374151}
+.tag-list{margin-top:12px;display:flex;gap:8px}
+.tag{background:#f3f4f6;padding:6px 8px;border-radius:999px;font-size:13px;color:#374151}
+.card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.avatar-sm{width:36px;height:36px;border-radius:50%;background:#1f6feb;color:#fff;display:inline-flex;align-items:center;justify-content:center}

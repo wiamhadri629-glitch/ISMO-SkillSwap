@@ -1,0 +1,11 @@
+/* Badges grid for admin */
+.profile-container h2{margin:0 0 8px 0}
+.profile-container p{margin:0 0 18px 0}
+
+.badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.badge-card{background:#fff;border:1px solid #eef2f6;border-radius:12px;padding:18px;box-shadow:0 8px 24px rgba(2,6,23,0.04)}
+.badge-card .icon{font-size:32px;margin-bottom:8px}
+.badge-card h4{margin:6px 0 6px 0}
+.badge-card p{color:#6b7280;margin:0}
+
+@media(max-width:900px){.badges-grid{grid-template-columns:1fr}}

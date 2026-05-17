@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ISMO-SkillSwap - Classement</title>
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="classement.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="container">
+                <aside class="sidebar sidebar-formateur">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div>
+          <h1>ISMO-SkillSwap</h1>
+          <p>ISMO Tétouan</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="../accueil/accueil.html" class="nav-item">
+          <i class="fas fa-home"></i>
+          <span>Accueil</span>
+        </a>
+        <a href="../marketplace/marketplace.html" class="nav-item">
+          <i class="fas fa-store"></i>
+          <span>Marketplace</span>
+        </a>
+        <a href="../profile/profile.html" class="nav-item">
+          <i class="fas fa-user"></i>
+          <span>Profil</span>
+        </a>
+        <a href="../passport/passport.html" class="nav-item">
+          <i class="fas fa-passport"></i>
+          <span>Passport</span>
+        </a>
+        <a href="../classement/classement.html" class="nav-item active">
+          <i class="fas fa-ranking-star"></i>
+          <span>Classement</span>
+        </a>
+        <a href="../validation/validations.html" class="nav-item">
+          <i class="fas fa-check-circle"></i>
+          <span>Validations</span>
+        </a>
+        <a href="../badge/badges.html" class="nav-item">
+          <i class="fas fa-trophy"></i>
+          <span>Badges</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="avatar">MF</div>
+          <div>
+            <p class="user-name">Marc Formateur</p>
+            <p class="user-role">Formateur</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+        <header class="top-header">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Rechercher...">
+      </div>
+      <div class="header-actions">
+        <button class="notification-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </button>
+        <div class="user-menu" id="profileToggle">
+          <div class="avatar-large">MF</div>
+          <div>
+            <p class="user-name">Marc Formateur</p>
+            <p class="user-role">Formateur</p>
+          </div>
+          <i class="fas fa-chevron-down" id="chevronIcon"></i>
+        </div>
+      </div>
+
+      <!-- Profile Dropdown -->
+      <div class="profile-dropdown" id="profileMenu">
+        <div class="dropdown-header">
+          <div class="dropdown-avatar">MF</div>
+          <div class="dropdown-user-info">
+            <h4>Marc Formateur</h4>
+            <p>Platform Formateur</p>
+            <span class="role-badge role-badge-formateur">Formateur</span>
+          </div>
+        </div>
+        <div class="dropdown-meta">
+          <div class="meta-item"><i class="fas fa-envelope"></i> formateur@ismo.com</div>
+          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 3/9/2022</div>
+          <div class="meta-item"><i class="fas fa-chart-line"></i> 4,200 Reputation Points</div>
+          <div class="meta-item"><i class="fas fa-medal"></i> 35 Skills Validated</div>
+        </div>
+        <div class="dropdown-actions">
+          <a href="../passport/passport.html" class="dropdown-action">
+            <i class="fas fa-download"></i> Download Skills Passport (PDF)
+          </a>
+          <a href="../profile/profile.html" class="dropdown-action">
+            <i class="fas fa-user"></i> View Profile
+          </a>
+          <a href="../profile/profile.html" class="dropdown-action">
+            <i class="fas fa-gear"></i> Settings
+          </a>
+        </div>
+        <div class="dropdown-signout">
+          <a href="../../login/index.html" class="dropdown-action signout">
+            <i class="fas fa-right-from-bracket"></i> Sign Out
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content classement-page">
+      <section class="rank-header">
+        <div>
+          <p class="eyebrow">Classement des Mentors</p>
+          <h1>Les meilleurs contributeurs de la communauté ISMO</h1>
+        </div>
+      </section>
+
+      <section class="rank-cards">
+        <article class="rank-card highlight">
+          <div class="rank-card-title">
+            <i class="fas fa-trophy"></i>
+            <div>
+              <span>Ton Rang</span>
+              <p>Top 5% ce mois</p>
+            </div>
+          </div>
+          <strong>#12</strong>
+        </article>
+        <article class="rank-card">
+          <div class="rank-card-title">
+            <i class="fas fa-star"></i>
+            <div>
+              <span>Tes Points</span>
+              <p>+85 cette semaine</p>
+            </div>
+          </div>
+          <strong>1,245</strong>
+        </article>
+        <article class="rank-card">
+          <div class="rank-card-title">
+            <i class="fas fa-chart-line"></i>
+            <div>
+              <span>Progression</span>
+              <p>rangs cette semaine</p>
+            </div>
+          </div>
+          <strong>+3</strong>
+        </article>
+      </section>
+
+      <section class="top-list-section">
+        <div class="list-header">
+          <h2>Top 10 Mentors - Mai 2024</h2>
+          <select>
+            <option>Ce mois</option>
+            <option>Cette semaine</option>
+            <option>Ce trimestre</option>
+          </select>
+        </div>
+        <div class="top-list">
+          <article class="top-list-item">
+            <div class="top-rank">#1</div>
+            <div class="top-avatar">AC</div>
+            <div class="top-info">
+              <strong>Alice Chen</strong>
+              <span>Dev Web & Mobile</span>
+            </div>
+            <div class="top-score">
+              <span>2 450</span>
+              <small>12 badges</small>
+            </div>
+          </article>
+          <article class="top-list-item">
+            <div class="top-rank">#2</div>
+            <div class="top-avatar">BM</div>
+            <div class="top-info">
+              <strong>Bob Martinez</strong>
+              <span>Data Engineering</span>
+            </div>
+            <div class="top-score">
+              <span>2 180</span>
+              <small>10 badges</small>
+            </div>
+          </article>
+          <article class="top-list-item">
+            <div class="top-rank">#3</div>
+            <div class="top-avatar">CW</div>
+            <div class="top-info">
+              <strong>Carol Wang</strong>
+              <span>Dev Digital</span>
+            </div>
+            <div class="top-score">
+              <span>1 950</span>
+              <small>9 badges</small>
+            </div>
+          </article>
+          <article class="top-list-item">
+            <div class="top-rank">#4</div>
+            <div class="top-avatar secondary">DL</div>
+            <div class="top-info">
+              <strong>David Lee</strong>
+              <span>Infrastructure</span>
+            </div>
+            <div class="top-score">
+              <span>1 720</span>
+              <small>8 badges</small>
+            </div>
+          </article>
+          <article class="top-list-item">
+            <div class="top-rank">#5</div>
+            <div class="top-avatar">EG</div>
+            <div class="top-info">
+              <strong>Eva Garcia</strong>
+              <span>Dev Web & Mobile</span>
+            </div>
+            <div class="top-score">
+              <span>1 580</span>
+              <small>7 badges</small>
+            </div>
+          </article>
+          <article class="top-list-item">
+            <div class="top-rank">#6</div>
+            <div class="top-avatar">FA</div>
+            <div class="top-info">
+              <strong>Frank Ahmed</strong>
+              <span>Dev Digital</span>
+            </div>
+            <div class="top-score">
+              <span>1 420</span>
+              <small>7 badges</small>
+            </div>
+          </article>
+          <article class="top-list-item">
+            <div class="top-rank">#7</div>
+            <div class="top-avatar">GK</div>
+            <div class="top-info">
+              <strong>Grace Kim</strong>
+              <span>Data Engineering</span>
+            </div>
+            <div class="top-score">
+              <span>1 250</span>
+              <small>6 badges</small>
+            </div>
+          </article>
+          <article class="top-list-item">
+            <div class="top-rank">#8</div>
+            <div class="top-avatar">HO</div>
+            <div class="top-info">
+              <strong>Hassan Omar</strong>
+              <span>Infrastructure</span>
+            </div>
+            <div class="top-score">
+              <span>1 180</span>
+              <small>6 badges</small>
+            </div>
+          </article>
+          <article class="top-list-item">
+            <div class="top-rank">#9</div>
+            <div class="top-avatar">IS</div>
+            <div class="top-info">
+              <strong>Iris Santos</strong>
+              <span>Dev Web & Mobile</span>
+            </div>
+            <div class="top-score">
+              <span>1 050</span>
+              <small>5 badges</small>
+            </div>
+          </article>
+          <article class="top-list-item">
+            <div class="top-rank">#10</div>
+            <div class="top-avatar">JT</div>
+            <div class="top-info">
+              <strong>Jack Taylor</strong>
+              <span>Dev Digital</span>
+            </div>
+            <div class="top-score">
+              <span>980</span>
+              <small>5 badges</small>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="badges-feature">
+        <h2>Badges les Plus Convoités</h2>
+        <div class="badge-grid">
+          <article class="badge-card">
+            <div class="badge-icon">⚛️</div>
+            <div>
+              <strong>Expert React</strong>
+              <p>45 stagiaires</p>
+            </div>
+          </article>
+          <article class="badge-card">
+            <div class="badge-icon">🐍</div>
+            <div>
+              <strong>Python Master</strong>
+              <p>38 stagiaires</p>
+            </div>
+          </article>
+          <article class="badge-card">
+            <div class="badge-icon">💾</div>
+            <div>
+              <strong>SQL Wizard</strong>
+              <p>32 stagiaires</p>
+            </div>
+          </article>
+          <article class="badge-card outlined">
+            <div class="badge-icon">🔧</div>
+            <div>
+              <strong>Git Guru</strong>
+              <p>28 stagiaires</p>
+            </div>
+          </article>
+          <article class="badge-card outlined">
+            <div class="badge-icon">🐳</div>
+            <div>
+              <strong>Docker Pro</strong>
+              <p>25 stagiaires</p>
+            </div>
+          </article>
+          <article class="badge-card outlined">
+            <div class="badge-icon">🤝</div>
+            <div>
+              <strong>Team Player</strong>
+              <p>52 stagiaires</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="rank-banner">
+        <div>
+          <h2>Niveau Actuel: Contributeur Actif</h2>
+          <p>1,245 points</p>
+        </div>
+        <div class="progress-bar">
+          <div class="progress" style="width: 68%"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const profileToggle = document.getElementById('profileToggle');
+    const profileMenu   = document.getElementById('profileMenu');
+    const chevronIcon   = document.getElementById('chevronIcon');
+    profileToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileMenu.classList.toggle('open');
+      chevronIcon.classList.toggle('rotated');
+    });
+    document.addEventListener('click', (e) => {
+      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.classList.remove('open');
+        chevronIcon.classList.remove('rotated');
+      }
+    });
+  </script>
+</body>
+
+</html>
