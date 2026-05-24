@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ISMO-SkillSwap - Passport</title>
+  <title>ISMO-SkillSwap - Modération</title>
   <link rel="stylesheet" href="../../css/styles.css">
   <link rel="stylesheet" href="passport.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -36,8 +36,8 @@
           <span>Profil</span>
         </a>
         <a href="../passport/passport.html" class="nav-item active">
-          <i class="fas fa-passport"></i>
-          <span>Passport</span>
+          <i class="fas fa-shield"></i>
+          <span>Modération</span>
         </a>
         <a href="../classement/classement.html" class="nav-item">
           <i class="fas fa-ranking-star"></i>
@@ -105,7 +105,7 @@
         </div>
         <div class="dropdown-actions">
           <a href="../passport/passport.html" class="dropdown-action">
-            <i class="fas fa-download"></i> Download Skills Passport (PDF)
+            <i class="fas fa-shield"></i> Modération
           </a>
           <a href="../profile/profile.html" class="dropdown-action">
             <i class="fas fa-user"></i> View Profile
@@ -122,39 +122,67 @@
       </div>
     </header>
 
-    <main class="main-content passport-page">
+    <main class="main-content">
       <section class="page-top">
         <div>
-          <p class="eyebrow">Skills Passport</p>
-          <h1>Votre portfolio de compétences validées</h1>
-          <p class="page-copy">Visualisez vos compétences techniques certifiées et découvrez les actions pour progresser encore plus.</p>
+          <h1>Modération des signalements</h1>
+          <p class="page-copy">Gérez les publications signalées par les utilisateurs.</p>
         </div>
-        <button class="btn primary download-btn">
-          <i class="fas fa-download"></i>
-          Download PDF
-        </button>
       </section>
 
-      <section class="passport-summary-card">
-        <div class="passport-row">
-          <div class="passport-profile">
-            <div class="avatar-hero">JS</div>
-            <div>
-              <h2>John Student</h2>
-              <p>Computer Science Student</p>
-              <p class="validated-skills">12 Validated Skills</p>
+      <div class="reported-grid">
+
+        <article class="reported-card" data-id="0">
+          <div class="reported-head">
+            <div class="reported-meta">
+              <span class="avatar-sm">AL</span>
+              <div>
+                <strong>Alice Lopez</strong>
+                <small>Signalé le 22/05/2024</small>
+              </div>
+            </div>
+            <span class="report-count"><i class="fas fa-exclamation-triangle"></i> 3 signalements</span>
+          </div>
+          <div class="reported-body">
+            <h3>Problème d'alignement CSS Grid</h3>
+            <p>Les éléments de ma grille ne s'alignent pas correctement sur mobile.</p>
+            <div class="tag-list">
+              <span class="tag">CSS</span>
+              <span class="tag">Dev Web & Mobile</span>
             </div>
           </div>
-        </div>
-      </section>
+          <div class="reported-actions">
+            <button class="btn primary" onclick="this.closest('.reported-card').remove()"><i class="fas fa-trash-can"></i> Supprimer</button>
+            <button class="btn secondary" onclick="this.closest('.reported-card').remove()"><i class="fas fa-check"></i> Ignorer</button>
+          </div>
+        </article>
 
-      <section class="passport-promo-card">
-        <div>
-          <h2>Level Up Your Skills</h2>
-          <p>Complete more help requests to validate new skills and increase your levels.</p>
-        </div>
-        <button class="btn primary">Browse Opportunities</button>
-      </section>
+        <article class="reported-card" data-id="1">
+          <div class="reported-head">
+            <div class="reported-meta">
+              <span class="avatar-sm">MJ</span>
+              <div>
+                <strong>Mike Johnson</strong>
+                <small>Signalé le 21/05/2024</small>
+              </div>
+            </div>
+            <span class="report-count"><i class="fas fa-exclamation-triangle"></i> 1 signalement</span>
+          </div>
+          <div class="reported-body">
+            <h3>Optimisation requête SQL complexe</h3>
+            <p>Besoin d'aide pour optimiser une requête avec plusieurs JOIN qui est très lente.</p>
+            <div class="tag-list">
+              <span class="tag">SQL</span>
+              <span class="tag">Data Engineering</span>
+            </div>
+          </div>
+          <div class="reported-actions">
+            <button class="btn primary" onclick="this.closest('.reported-card').remove()"><i class="fas fa-trash-can"></i> Supprimer</button>
+            <button class="btn secondary" onclick="this.closest('.reported-card').remove()"><i class="fas fa-check"></i> Ignorer</button>
+          </div>
+        </article>
+
+      </div>
     </main>
   </div>
   <script>

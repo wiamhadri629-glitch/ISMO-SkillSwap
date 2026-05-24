@@ -55,6 +55,7 @@
 .profile-summary h2 {
   margin: 0 0 8px;
   font-size: 28px;
+  font-weight: 700;
 }
 
 .profile-summary p {
@@ -195,8 +196,8 @@
 }
 
 .skill-badge.warning {
-  background: #dcfce7;
-  color: #166534;
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .progress-bar {

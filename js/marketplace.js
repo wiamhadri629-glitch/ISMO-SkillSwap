@@ -1,16 +1,29 @@
-/* ===== Marketplace - Edit Own Posts ===== */
+/* ===== Marketplace - Edit & Delete Own Posts ===== */
 
 const user = window.currentUser || { initials: 'JS', name: 'John Student' };
+const isAdmin = user.role === 'admin';
 
 document.querySelectorAll('.market-card[data-author]').forEach(card => {
-  if (card.dataset.author !== user.initials) return;
-  const footer = card.querySelector('.card-footer');
-  if (!footer.querySelector('.btn-edit')) {
+  const isOwner = card.dataset.author === user.initials;
+  if (!isOwner && !isAdmin) return;
+  if (isOwner) {
+    const footer = card.querySelector('.card-footer');
+    if (!footer.querySelector('.btn-edit')) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-edit';
+      btn.innerHTML = '<i class="fas fa-pen"></i>';
+      btn.onclick = () => editPost(btn);
+      footer.appendChild(btn);
+    }
+  }
+  const head = card.querySelector('.card-head');
+  if (head && !head.querySelector('.btn-delete')) {
     const btn = document.createElement('button');
-    btn.className = 'btn-edit';
-    btn.innerHTML = '<i class="fas fa-pen"></i>';
-    btn.onclick = () => editPost(btn);
-    footer.appendChild(btn);
+    btn.className = 'btn-delete';
+    btn.title = 'Supprimer';
+    btn.innerHTML = '<i class="fas fa-trash-can"></i>';
+    btn.onclick = () => deletePost(card);
+    head.appendChild(btn);
   }
 });
 
@@ -39,4 +52,10 @@ function editPost(btn) {
 
   card.classList.add('editing');
   btn.innerHTML = '<i class="fas fa-check"></i>';
+}
+
+function deletePost(card) {
+  if (confirm('Supprimer cette publication ?')) {
+    card.remove();
+  }
 }

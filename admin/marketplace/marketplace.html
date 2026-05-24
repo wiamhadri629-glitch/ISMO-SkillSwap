@@ -38,8 +38,8 @@
           <span>Profil</span>
         </a>
         <a href="../passport/passport.html" class="nav-item">
-          <i class="fas fa-passport"></i>
-          <span>Passport</span>
+          <i class="fas fa-shield"></i>
+          <span>Modération</span>
         </a>
         <a href="../classement/classement.html" class="nav-item">
           <i class="fas fa-ranking-star"></i>
@@ -107,7 +107,7 @@
         </div>
         <div class="dropdown-actions">
           <a href="../passport/passport.html" class="dropdown-action">
-            <i class="fas fa-download"></i> Download Skills Passport (PDF)
+            <i class="fas fa-shield"></i> Modération
           </a>
           <a href="../profile/profile.html" class="dropdown-action">
             <i class="fas fa-user"></i> View Profile
@@ -128,7 +128,7 @@
       <div class="topbar-actions">
         <div class="topbar-left">
           <h1 class="section-title">Marketplace</h1>
-          <button class="btn primary publish">+ Publier une demande</button>
+          
         </div>
         
         <div class="profile-menu-wrap">
@@ -142,7 +142,7 @@
               </div>
             </div>
             <div class="profile-actions">
-              <button class="profile-action">Download Skills Passport (PDF)</button>
+              <button class="profile-action">Modération</button>
               <button class="profile-action secondary">View Profile</button>
               <button class="profile-action secondary">Settings</button>
             </div>
@@ -168,12 +168,13 @@
       </div>
 
       <div class="market-grid">
-        <article class="market-card">
+        <article class="market-card" data-author="SC">
           <div class="card-head">
             <div>
               <p class="status-pill open">Ouvert</p>
               <h2>Bug React - useState ne se met pas à jour</h2>
             </div>
+            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
           </div>
           <p class="card-copy">J'ai un problème avec useState qui ne se met pas à jour correctement dans mon composant.
           </p>
@@ -189,16 +190,16 @@
                 <small>14/05/2024</small>
               </div>
             </div>
-            <button class="btn secondary">Proposer aide</button>
-          </div>
+                      </div>
         </article>
 
-        <article class="market-card">
+        <article class="market-card" data-author="MJ">
           <div class="card-head">
             <div>
               <p class="status-pill in-progress">En cours</p>
               <h2>Optimisation requête SQL complexe</h2>
             </div>
+            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
           </div>
           <p class="card-copy">Besoin d'aide pour optimiser une requête avec plusieurs JOIN qui est très lente.</p>
           <div class="tag-list">
@@ -213,16 +214,16 @@
                 <small>13/05/2024</small>
               </div>
             </div>
-            <button class="btn secondary">Proposer aide</button>
-          </div>
+                      </div>
         </article>
 
-        <article class="market-card">
+        <article class="market-card" data-author="GM">
           <div class="card-head">
             <div>
               <p class="status-pill resolved">Résolu</p>
               <h2>Résolution conflit Git merge</h2>
             </div>
+            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
           </div>
           <p class="card-copy">Premier conflit de merge, besoin de conseils pour le résoudre proprement.</p>
           <div class="tag-list">
@@ -237,16 +238,16 @@
                 <small>12/05/2024</small>
               </div>
             </div>
-            <button class="btn secondary">Proposer aide</button>
-          </div>
+                      </div>
         </article>
 
-        <article class="market-card">
+        <article class="market-card" data-author="AL">
           <div class="card-head">
             <div>
               <p class="status-pill open">Ouvert</p>
               <h2>Problème d'alignement CSS Grid</h2>
             </div>
+            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
           </div>
           <p class="card-copy">Les éléments de ma grille ne s'alignent pas correctement sur mobile.</p>
           <div class="tag-list">
@@ -261,8 +262,7 @@
                 <small>11/05/2024</small>
               </div>
             </div>
-            <button class="btn secondary">Proposer aide</button>
-          </div>
+                      </div>
         </article>
       </div>
     </main>
@@ -284,6 +284,8 @@
       }
     });
   </script>
+  <script>window.currentUser = { initials: 'MA', name: 'Mohammed Admin', role: 'admin' };</script>
+  <script src="../../js/marketplace.js"></script>
 </body>
 
 </html>
