@@ -156,11 +156,36 @@
       </div>
 
       <div class="market-grid">
-        <article class="market-card">
+
+        <article class="market-card" data-author="JS" data-id="0">
           <div class="card-head">
             <div>
               <p class="status-pill open">Ouvert</p>
-              <h2>Bug React - useState ne se met pas à jour</h2>
+              <h2 class="card-title">Aide pour projet React Native</h2>
+            </div>
+          </div>
+          <p class="card-copy">Je cherche de l'aide pour structurer mon projet React Native avec navigation et gestion d'état.</p>
+          <div class="tag-list">
+            <span class="tag">React</span>
+            <span class="tag">Mobile</span>
+          </div>
+          <div class="card-footer">
+            <div class="author">
+              <span class="avatar-sm">JS</span>
+              <div>
+                <strong>John Student</strong>
+                <small>24/05/2024</small>
+              </div>
+            </div>
+            <button class="btn-edit" onclick="editPost(this)"><i class="fas fa-pen"></i></button>
+          </div>
+        </article>
+
+        <article class="market-card" data-author="SC" data-id="1">
+          <div class="card-head">
+            <div>
+              <p class="status-pill open">Ouvert</p>
+              <h2 class="card-title">Bug React - useState ne se met pas à jour</h2>
             </div>
           </div>
           <p class="card-copy">J'ai un problème avec useState qui ne se met pas à jour correctement dans mon composant.
@@ -177,15 +202,14 @@
                 <small>14/05/2024</small>
               </div>
             </div>
-            <button class="btn secondary">Proposer aide</button>
           </div>
         </article>
 
-        <article class="market-card">
+        <article class="market-card" data-author="MJ" data-id="2">
           <div class="card-head">
             <div>
               <p class="status-pill in-progress">En cours</p>
-              <h2>Optimisation requête SQL complexe</h2>
+              <h2 class="card-title">Optimisation requête SQL complexe</h2>
             </div>
           </div>
           <p class="card-copy">Besoin d'aide pour optimiser une requête avec plusieurs JOIN qui est très lente.</p>
@@ -201,15 +225,14 @@
                 <small>13/05/2024</small>
               </div>
             </div>
-            <button class="btn secondary">Proposer aide</button>
           </div>
         </article>
 
-        <article class="market-card">
+        <article class="market-card" data-author="GM" data-id="3">
           <div class="card-head">
             <div>
               <p class="status-pill resolved">Résolu</p>
-              <h2>Résolution conflit Git merge</h2>
+              <h2 class="card-title">Résolution conflit Git merge</h2>
             </div>
           </div>
           <p class="card-copy">Premier conflit de merge, besoin de conseils pour le résoudre proprement.</p>
@@ -225,15 +248,14 @@
                 <small>12/05/2024</small>
               </div>
             </div>
-            <button class="btn secondary">Proposer aide</button>
           </div>
         </article>
 
-        <article class="market-card">
+        <article class="market-card" data-author="AL" data-id="4">
           <div class="card-head">
             <div>
               <p class="status-pill open">Ouvert</p>
-              <h2>Problème d'alignement CSS Grid</h2>
+              <h2 class="card-title">Problème d'alignement CSS Grid</h2>
             </div>
           </div>
           <p class="card-copy">Les éléments de ma grille ne s'alignent pas correctement sur mobile.</p>
@@ -249,7 +271,6 @@
                 <small>11/05/2024</small>
               </div>
             </div>
-            <button class="btn secondary">Proposer aide</button>
           </div>
         </article>
       </div>
@@ -272,6 +293,8 @@
       }
     });
   </script>
+  <script>window.currentUser = { initials: 'JS', name: 'John Student' };</script>
+  <script src="../../js/marketplace.js"></script>
 </body>
 
 </html>

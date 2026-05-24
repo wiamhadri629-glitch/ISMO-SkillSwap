@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ISMO-SkillSwap - Accueil Mentor</title>
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="accueil.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+                <aside class="sidebar sidebar-mentor">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div>
+          <h1>ISMO-SkillSwap</h1>
+          <p>ISMO Tétouan</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="../accueil/accueil.html" class="nav-item active">
+          <i class="fas fa-home"></i>
+          <span>Accueil</span>
+        </a>
+        <a href="../marketplace/marketplace.html" class="nav-item">
+          <i class="fas fa-store"></i>
+          <span>Marketplace</span>
+        </a>
+        <a href="../profile/profile.html" class="nav-item">
+          <i class="fas fa-user"></i>
+          <span>Profil</span>
+        </a>
+        <a href="../passport/passport.html" class="nav-item">
+          <i class="fas fa-passport"></i>
+          <span>Passport</span>
+        </a>
+        <a href="../classement/classement.html" class="nav-item">
+          <i class="fas fa-ranking-star"></i>
+          <span>Classement</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="avatar">MM</div>
+          <div>
+            <p class="user-name">Marc Mentor</p>
+            <p class="user-role">Mentor</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+        <header class="top-header">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Rechercher...">
+      </div>
+      <div class="header-actions">
+        <button class="notification-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </button>
+        <div class="user-menu" id="profileToggle">
+          <div class="avatar-large">MM</div>
+          <div>
+            <p class="user-name">Marc Mentor</p>
+            <p class="user-role">Mentor</p>
+          </div>
+          <i class="fas fa-chevron-down" id="chevronIcon"></i>
+        </div>
+      </div>
+
+      <!-- Profile Dropdown -->
+      <div class="profile-dropdown" id="profileMenu">
+        <div class="dropdown-header">
+          <div class="dropdown-avatar">MM</div>
+          <div class="dropdown-user-info">
+            <h4>Marc Mentor</h4>
+            <p>Platform Mentor</p>
+            <span class="role-badge role-badge-mentor">Mentor</span>
+          </div>
+        </div>
+        <div class="dropdown-meta">
+          <div class="meta-item"><i class="fas fa-envelope"></i> mentor@ismo.com</div>
+          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 15/08/2022</div>
+          <div class="meta-item"><i class="fas fa-chart-line"></i> 4,200 Reputation Points</div>
+          <div class="meta-item"><i class="fas fa-medal"></i> 35 Skills Validated</div>
+        </div>
+        <div class="dropdown-actions">
+          <a href="../passport/passport.html" class="dropdown-action">
+            <i class="fas fa-download"></i> Download Skills Passport (PDF)
+          </a>
+          <a href="../profile/profile.html" class="dropdown-action">
+            <i class="fas fa-user"></i> View Profile
+          </a>
+          <a href="../profile/profile.html" class="dropdown-action">
+            <i class="fas fa-gear"></i> Settings
+          </a>
+        </div>
+        <div class="dropdown-signout">
+          <a href="../../login/index.html" class="dropdown-action signout">
+            <i class="fas fa-right-from-bracket"></i> Sign Out
+          </a>
+        </div>
+      </div>
+    </header>
+<main class="main-content">
+      <h1 class="section-title">Tableau de Bord</h1>
+      <p class="sub">Voici un aperçu de ton activité et de tes compétences validées</p>
+      <div class="cards-grid">
+        <article class="stat-card">
+          <div class="stat-head">
+            <span>Points Total</span>
+            <span>📈</span>
+          </div>
+          <h2>4,200</h2>
+          <p>+12% cette semaine</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-head">
+            <span>Aides réalisées</span>
+            <span>👥</span>
+          </div>
+          <h2>32</h2>
+          <p>+5 cette semaine</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-head">
+            <span>Demandes actives</span>
+            <span>💬</span>
+          </div>
+          <h2>8</h2>
+          <p>3 en attente</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-head">
+            <span>Badges obtenus</span>
+            <span>🏅</span>
+          </div>
+          <h2>8</h2>
+          <p>7 restants</p>
+        </article>
+      </div>
+
+      <div class="grid-layout">
+        <section class="chart-card">
+          <div class="section-header">
+            <h3>Activité Hebdomadaire</h3>
+          </div>
+          <div class="chart-placeholder">
+            <div class="bar-row">
+              <div class="bar blue" style="height:40%"></div>
+              <div class="bar violet" style="height:20%"></div><span>Mon</span>
+            </div>
+            <div class="bar-row">
+              <div class="bar blue" style="height:30%"></div>
+              <div class="bar violet" style="height:50%"></div><span>Tue</span>
+            </div>
+            <div class="bar-row">
+              <div class="bar blue" style="height:60%"></div>
+              <div class="bar violet" style="height:30%"></div><span>Wed</span>
+            </div>
+            <div class="bar-row">
+              <div class="bar blue" style="height:50%"></div>
+              <div class="bar violet" style="height:40%"></div><span>Thu</span>
+            </div>
+            <div class="bar-row">
+              <div class="bar blue" style="height:80%"></div>
+              <div class="bar violet" style="height:20%"></div><span>Fri</span>
+            </div>
+            <div class="bar-row">
+              <div class="bar blue" style="height:30%"></div>
+              <div class="bar violet" style="height:10%"></div><span>Sat</span>
+            </div>
+            <div class="bar-row">
+              <div class="bar blue" style="height:20%"></div>
+              <div class="bar violet" style="height:30%"></div><span>Sun</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="activity-card">
+          <div class="section-header">
+            <h3>Activité Récente</h3>
+          </div>
+          <ul class="activity-list">
+            <li><strong class="dot blue"></strong> A aidé Sarah avec un bug React <span
+                class="value">+50</span><small>Il y a 2h</small></li>
+            <li><strong class="dot purple"></strong> A reçu de l'aide pour une requête SQL <span
+                class="value negative">-25</span><small>Il y a 5h</small></li>
+            <li><strong class="dot green"></strong> A obtenu le badge "Réponse Rapide" <span
+                class="value">+100</span><small>Il y a 1 jour</small></li>
+            <li><strong class="dot blue"></strong> A aidé Mike avec un merge Git <span class="value">+40</span><small>Il
+                y a 1 jour</small></li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </div>
+  
+  <script>
+    const profileToggle = document.getElementById('profileToggle');
+    const profileMenu   = document.getElementById('profileMenu');
+    const chevronIcon   = document.getElementById('chevronIcon');
+    profileToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileMenu.classList.toggle('open');
+      chevronIcon.classList.toggle('rotated');
+    });
+    document.addEventListener('click', (e) => {
+      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.classList.remove('open');
+        chevronIcon.classList.remove('rotated');
+      }
+    });
+  </script>
+</body>
+
+</html>

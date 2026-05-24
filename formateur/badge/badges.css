@@ -1,11 +1,152 @@
-/* Badges grid for formateur */
-.profile-container h2{margin:0 0 8px 0}
-.profile-container p{margin:0 0 18px 0}
+/* ===== Badges Page - Formateur ===== */
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 18px;
+  font-size: 15px;
+}
 
-.badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.badge-card{background:#fff;border:1px solid #eef2f6;border-radius:12px;padding:18px;box-shadow:0 8px 24px rgba(2,6,23,0.04)}
-.badge-card .icon{font-size:32px;margin-bottom:8px}
-.badge-card h4{margin:6px 0 6px 0}
-.badge-card p{color:#6b7280;margin:0}
+/* Override badge-card cursor (not clickable here) */
+.badges-section .badge-card {
+  cursor: default;
+  text-align: center;
+}
 
-@media(max-width:900px){.badges-grid{grid-template-columns:1fr}}
+.badges-section .badge-card:hover {
+  border-color: #e5e7eb;
+  box-shadow: none;
+}
+
+.badge-status {
+  margin-top: 8px;
+}
+
+/* Assign Form */
+.assign-form {
+  margin-top: 4px;
+}
+
+.assign-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.assign-field {
+  flex: 1;
+  min-width: 180px;
+}
+
+.assign-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.assign-btn-wrap {
+  flex: 0 0 auto;
+  min-width: auto;
+}
+
+.btn-assign {
+  background: linear-gradient(135deg, #2563eb, #0891b2);
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  height: 42px;
+}
+
+.btn-assign:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+/* Badge tag in table */
+.badge-tag {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #f0f4ff;
+  color: #2563eb;
+}
+
+/* Section spacing */
+.assign-section {
+  margin-top: 28px;
+}
+
+/* ===== Shared form/table styles (from validations.css) ===== */
+.filter-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.validations-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.validations-table thead {
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.validations-table th {
+  padding: 14px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  font-size: 13px;
+}
+
+.validations-table td {
+  padding: 14px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #0f172a;
+}
+
+.validations-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+@media (max-width: 900px) {
+  .assign-row {
+    flex-direction: column;
+  }
+
+  .assign-field {
+    width: 100%;
+  }
+}

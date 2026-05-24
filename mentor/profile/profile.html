@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ISMO-SkillSwap - Profil</title>
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="container">
+                <aside class="sidebar sidebar-mentor">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div>
+          <h1>ISMO-SkillSwap</h1>
+          <p>ISMO Tétouan</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="../accueil/accueil.html" class="nav-item">
+          <i class="fas fa-home"></i>
+          <span>Accueil</span>
+        </a>
+        <a href="../marketplace/marketplace.html" class="nav-item">
+          <i class="fas fa-store"></i>
+          <span>Marketplace</span>
+        </a>
+        <a href="../profile/profile.html" class="nav-item active">
+          <i class="fas fa-user"></i>
+          <span>Profil</span>
+        </a>
+        <a href="../passport/passport.html" class="nav-item">
+          <i class="fas fa-passport"></i>
+          <span>Passport</span>
+        </a>
+        <a href="../classement/classement.html" class="nav-item">
+          <i class="fas fa-ranking-star"></i>
+          <span>Classement</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="avatar">MM</div>
+          <div>
+            <p class="user-name">Marc Mentor</p>
+            <p class="user-role">Mentor</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+        <header class="top-header">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Rechercher...">
+      </div>
+      <div class="header-actions">
+        <button class="notification-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </button>
+        <div class="user-menu" id="profileToggle">
+          <div class="avatar-large">MM</div>
+          <div>
+            <p class="user-name">Marc Mentor</p>
+            <p class="user-role">Mentor</p>
+          </div>
+          <i class="fas fa-chevron-down" id="chevronIcon"></i>
+        </div>
+      </div>
+
+      <!-- Profile Dropdown -->
+      <div class="profile-dropdown" id="profileMenu">
+        <div class="dropdown-header">
+          <div class="dropdown-avatar">MM</div>
+          <div class="dropdown-user-info">
+            <h4>Marc Mentor</h4>
+            <p>Platform Mentor</p>
+            <span class="role-badge role-badge-mentor">Mentor</span>
+          </div>
+        </div>
+        <div class="dropdown-meta">
+          <div class="meta-item"><i class="fas fa-envelope"></i> mentor@ismo.com</div>
+          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 15/08/2022</div>
+          <div class="meta-item"><i class="fas fa-chart-line"></i> 4,200 Reputation Points</div>
+          <div class="meta-item"><i class="fas fa-medal"></i> 35 Skills Validated</div>
+        </div>
+        <div class="dropdown-actions">
+          <a href="../passport/passport.html" class="dropdown-action">
+            <i class="fas fa-download"></i> Download Skills Passport (PDF)
+          </a>
+          <a href="../profile/profile.html" class="dropdown-action">
+            <i class="fas fa-user"></i> View Profile
+          </a>
+          <a href="../profile/profile.html" class="dropdown-action">
+            <i class="fas fa-gear"></i> Settings
+          </a>
+        </div>
+        <div class="dropdown-signout">
+          <a href="../../login/index.html" class="dropdown-action signout">
+            <i class="fas fa-right-from-bracket"></i> Sign Out
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content profile-page">
+      <section class="profile-hero">
+        <div class="profile-card">
+          <div class="profile-summary">
+            <div class="profile-avatar hero">MM</div>
+            <div>
+              <h2>Marc Mentor</h2>
+              <p>Platform Mentor</p>
+              <p class="member-since">Membre depuis 15/08/2022</p>
+            </div>
+          </div>
+          <div class="profile-actions-hero">
+            <button class="btn primary">Modifier profil</button>
+          </div>
+        </div>
+        <div class="profile-stats-hero">
+          <article class="stat-card small">
+            <span class="stat-label">Aides réalisées</span>
+            <strong>32</strong>
+            <span class="stat-note">+5 ce mois</span>
+          </article>
+          <article class="stat-card small">
+            <span class="stat-label">Points de réputation</span>
+            <strong>8500</strong>
+            <span class="stat-note positive">+85 cette semaine</span>
+          </article>
+          <article class="stat-card small">
+            <span class="stat-label">Badges obtenus</span>
+            <strong>8/15</strong>
+            <span class="stat-note">7 restants</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="competence-section">
+        <div class="section-heading">
+          <h3>Mes Compétences</h3>
+          <button class="add-competence-btn">+ Ajouter une compétence</button>
+        </div>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <div class="skill-header">
+              <strong>React</strong>
+              <span class="skill-badge success">✔️ Intermédiaire</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress" style="width: 92%"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <strong>TypeScript</strong>
+              <span class="skill-badge info">Intermédiaire</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress" style="width: 78%"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <strong>Node.js</strong>
+              <span class="skill-badge info">Intermédiaire</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress" style="width: 85%"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <strong>Python</strong>
+              <span class="skill-badge warning">Débutant</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress" style="width: 55%"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <strong>SQL</strong>
+              <span class="skill-badge success">Intermédiaire</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress" style="width: 82%"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header">
+              <strong>Docker</strong>
+              <span class="skill-badge warning">Débutant</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress" style="width: 45%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="badges-section">
+        <div class="section-heading">
+          <h3>Badges & Réalisations</h3>
+        </div>
+        <div class="badges-grid">
+          <article class="badge-card obtained">
+            <div class="badge-icon">⭐</div>
+            <h4>Premier Aide</h4>
+            <p>A aidé son premier camarade</p>
+            <span class="badge-status obtained">✔ Obtenu</span>
+          </article>
+          <article class="badge-card obtained">
+            <div class="badge-icon">⚛️</div>
+            <h4>Expert React</h4>
+            <p>Résolu 10 problèmes React</p>
+            <span class="badge-status obtained">✔ Obtenu</span>
+          </article>
+          <article class="badge-card obtained">
+            <div class="badge-icon">⚡</div>
+            <h4>Réponse Rapide</h4>
+            <p>Répondu en moins d'1 heure</p>
+            <span class="badge-status obtained">✔ Obtenu</span>
+          </article>
+          <article class="badge-card locked">
+            <div class="badge-icon">👨‍💻</div>
+            <h4>Mentor Code</h4>
+            <p>Aidé 50 stagiaires</p>
+            <span class="badge-status locked">Verrouillé</span>
+          </article>
+          <article class="badge-card locked">
+            <div class="badge-icon">🔧</div>
+            <h4>Git Guru</h4>
+            <p>Résolu 20 problèmes Git</p>
+            <span class="badge-status locked">Verrouillé</span>
+          </article>
+          <article class="badge-card locked">
+            <div class="badge-icon">🤝</div>
+            <h4>Team Player</h4>
+            <p>Collaboré sur 15 solutions</p>
+            <span class="badge-status locked">Verrouillé</span>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const profileToggle = document.getElementById('profileToggle');
+    const profileMenu   = document.getElementById('profileMenu');
+    const chevronIcon   = document.getElementById('chevronIcon');
+    profileToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileMenu.classList.toggle('open');
+      chevronIcon.classList.toggle('rotated');
+    });
+    document.addEventListener('click', (e) => {
+      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.classList.remove('open');
+        chevronIcon.classList.remove('rotated');
+      }
+    });
+  </script>
+</body>
+
+</html>

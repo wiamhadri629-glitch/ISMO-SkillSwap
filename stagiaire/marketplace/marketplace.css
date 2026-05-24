@@ -440,3 +440,29 @@ body {
     justify-content: space-between
   }
 }
+
+/* Edit button */
+.btn-edit {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.btn-edit:hover {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+.market-card.editing .btn-edit {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+}

@@ -85,6 +85,20 @@ body {
     background: linear-gradient(135deg, #16a34a, #22c55e);
 }
 
+.sidebar-mentor {
+    background: linear-gradient(160deg, #92400e 0%, #451a03 100%);
+}
+.sidebar-mentor .nav-item.active {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
+}
+.sidebar-mentor .nav-item:hover:not(.active) {
+    background: rgba(245, 158, 11, 0.15);
+}
+.sidebar-mentor .sidebar-logo {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+}
+
 .sidebar-admin {
     background: linear-gradient(160deg, #4c1d95 0%, #2e1065 100%);
 }
@@ -201,12 +215,12 @@ body {
 .user-name {
     font-size: 13px;
     font-weight: 600;
-    color: white;
+    color: #1f2937;
 }
 
 .user-role {
     font-size: 11px;
-    color: rgba(255,255,255,0.5);
+    color: #6b7280;
     margin-top: 2px;
 }
 
@@ -611,6 +625,7 @@ body {
 
 .role-badge-stagiaire { background: #dbeafe; color: #1d4ed8; }
 .role-badge-formateur { background: #dcfce7; color: #15803d; }
+.role-badge-mentor    { background: #fef3c7; color: #92400e; }
 .role-badge-admin     { background: #fce7f3; color: #be185d; }
 
 .dropdown-meta {
