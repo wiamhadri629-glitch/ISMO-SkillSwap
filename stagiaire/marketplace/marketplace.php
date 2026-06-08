@@ -25,23 +25,23 @@
         </div>
       </div>
       <nav class="sidebar-nav">
-        <a href="../accueil/accueil.html" class="nav-item">
+        <a href="../accueil/accueil.php" class="nav-item">
           <i class="fas fa-home"></i>
           <span>Accueil</span>
         </a>
-        <a href="../marketplace/marketplace.html" class="nav-item active">
+        <a href="../marketplace/marketplace.php" class="nav-item active">
           <i class="fas fa-store"></i>
           <span>Marketplace</span>
         </a>
-        <a href="../profile/profile.html" class="nav-item">
+        <a href="../profile/profile.php" class="nav-item">
           <i class="fas fa-user"></i>
           <span>Profil</span>
         </a>
-        <a href="../passport/passport.html" class="nav-item">
+        <a href="../passport/passport.php" class="nav-item">
           <i class="fas fa-passport"></i>
           <span>Passport</span>
         </a>
-        <a href="../classement/classement.html" class="nav-item">
+        <a href="../classement/classement.php" class="nav-item">
           <i class="fas fa-ranking-star"></i>
           <span>Classement</span>
         </a>
@@ -94,18 +94,18 @@
           <div class="meta-item"><i class="fas fa-medal"></i> 12 Skills Validated</div>
         </div>
         <div class="dropdown-actions">
-          <a href="../passport/passport.html" class="dropdown-action">
+          <a href="../passport/passport.php" class="dropdown-action">
             <i class="fas fa-download"></i> Download Skills Passport (PDF)
           </a>
-          <a href="../profile/profile.html" class="dropdown-action">
+          <a href="../profile/profile.php" class="dropdown-action">
             <i class="fas fa-user"></i> View Profile
           </a>
-          <a href="../profile/profile.html" class="dropdown-action">
+          <a href="../profile/profile.php" class="dropdown-action">
             <i class="fas fa-gear"></i> Settings
           </a>
         </div>
         <div class="dropdown-signout">
-          <a href="../../login/index.html" class="dropdown-action signout">
+          <a href="../../login/index.php" class="dropdown-action signout">
             <i class="fas fa-right-from-bracket"></i> Sign Out
           </a>
         </div>
@@ -116,7 +116,7 @@
       <div class="topbar-actions">
         <div class="topbar-left">
           <h1 class="section-title">Marketplace</h1>
-          <button class="btn primary publish">+ Publier une demande</button>
+          <a href="ajouter_demande.php" class="btn primary publish">+ Publier une demande</a>
         </div>
         
         <div class="profile-menu-wrap">
@@ -130,11 +130,11 @@
               </div>
             </div>
             <div class="profile-actions">
-              <button class="profile-action">Download Skills Passport (PDF)</button>
-              <button class="profile-action secondary">View Profile</button>
-              <button class="profile-action secondary">Settings</button>
+              <a href="../passport/passport.php" class="profile-action">Download Skills Passport (PDF)</a>
+              <a href="../profile/profile.php" class="profile-action secondary">View Profile</a>
+              <a href="../profile/profile.php" class="profile-action secondary">Settings</a>
             </div>
-            <button class="signout">Sign Out</button>
+            <a href="../../login/index.php" class="signout">Sign Out</a>
           </div>
         </div>
       </div>
@@ -143,6 +143,7 @@
         <div class="search-large">
           <span>🔍</span>
           <input type="text" placeholder="Rechercher par titre ou technologie...">
+          <button class="btn secondary">Rechercher</button>
         </div>
         <div class="filter-select">
           <select>
@@ -163,7 +164,11 @@
               <p class="status-pill open">Ouvert</p>
               <h2 class="card-title">Aide pour projet React Native</h2>
             </div>
-            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
+          <?php
+            if (true) { 
+              echo '<button class="btn-delete" onclick="deletePost(this)"><i class="fas fa-trash"></i></button>';
+            }?>
+
           </div>
           <p class="card-copy">Je cherche de l'aide pour structurer mon projet React Native avec navigation et gestion d'état.</p>
           <div class="tag-list">
@@ -178,7 +183,8 @@
                 <small>24/05/2024</small>
               </div>
             </div>
-            <button class="btn-edit" onclick="editPost(this)"><i class="fas fa-pen"></i></button>
+            <button class="btn-edit" onclick="editPost(this)"><i class="fas fa-pen"></i>
+          </button>
           </div>
         </article>
 
@@ -187,9 +193,6 @@
             <div>
               <p class="status-pill open">Ouvert</p>
               <h2 class="card-title">Bug React - useState ne se met pas à jour</h2>
-            </div>
-            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
-          </div>
           <p class="card-copy">J'ai un problème avec useState qui ne se met pas à jour correctement dans mon composant.
           </p>
           <div class="tag-list">
@@ -212,9 +215,6 @@
             <div>
               <p class="status-pill in-progress">En cours</p>
               <h2 class="card-title">Optimisation requête SQL complexe</h2>
-            </div>
-            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
-          </div>
           <p class="card-copy">Besoin d'aide pour optimiser une requête avec plusieurs JOIN qui est très lente.</p>
           <div class="tag-list">
             <span class="tag">SQL</span>
@@ -236,9 +236,6 @@
             <div>
               <p class="status-pill resolved">Résolu</p>
               <h2 class="card-title">Résolution conflit Git merge</h2>
-            </div>
-            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
-          </div>
           <p class="card-copy">Premier conflit de merge, besoin de conseils pour le résoudre proprement.</p>
           <div class="tag-list">
             <span class="tag">Git</span>
@@ -260,9 +257,6 @@
             <div>
               <p class="status-pill open">Ouvert</p>
               <h2 class="card-title">Problème d'alignement CSS Grid</h2>
-            </div>
-            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
-          </div>
           <p class="card-copy">Les éléments de ma grille ne s'alignent pas correctement sur mobile.</p>
           <div class="tag-list">
             <span class="tag">CSS</span>

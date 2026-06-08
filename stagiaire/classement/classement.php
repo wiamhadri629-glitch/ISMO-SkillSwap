@@ -12,7 +12,7 @@
 
 <body>
   <div class="container">
-                <aside class="sidebar sidebar-admin">
+                <aside class="sidebar sidebar-stagiaire">
       <div class="sidebar-header">
         <div class="sidebar-logo">
           <i class="fas fa-graduation-cap"></i>
@@ -23,45 +23,33 @@
         </div>
       </div>
       <nav class="sidebar-nav">
-        <a href="../accueil/accueil.html" class="nav-item">
+        <a href="../accueil/accueil.php" class="nav-item">
           <i class="fas fa-home"></i>
           <span>Accueil</span>
         </a>
-        <a href="../marketplace/marketplace.html" class="nav-item">
+        <a href="../marketplace/marketplace.php" class="nav-item">
           <i class="fas fa-store"></i>
           <span>Marketplace</span>
         </a>
-        <a href="../profile/profile.html" class="nav-item">
+        <a href="../profile/profile.php" class="nav-item">
           <i class="fas fa-user"></i>
           <span>Profil</span>
         </a>
-        <a href="../passport/passport.html" class="nav-item">
-          <i class="fas fa-shield"></i>
-          <span>Modération</span>
+        <a href="../passport/passport.php" class="nav-item">
+          <i class="fas fa-passport"></i>
+          <span>Passport</span>
         </a>
-        <a href="../classement/classement.html" class="nav-item active">
+        <a href="../classement/classement.php" class="nav-item active">
           <i class="fas fa-ranking-star"></i>
           <span>Classement</span>
-        </a>
-        <a href="../validation/validations.html" class="nav-item">
-          <i class="fas fa-check-circle"></i>
-          <span>Validations</span>
-        </a>
-        <a href="../badge/badges.html" class="nav-item">
-          <i class="fas fa-trophy"></i>
-          <span>Badges</span>
-        </a>
-        <a href="../parametre/parametres.html" class="nav-item">
-          <i class="fas fa-cog"></i>
-          <span>Paramètres</span>
         </a>
       </nav>
       <div class="sidebar-footer">
         <div class="user-info">
-          <div class="avatar">MA</div>
+          <div class="avatar">JS</div>
           <div>
-            <p class="user-name">Mohammed Admin</p>
-            <p class="user-role">Admin</p>
+            <p class="user-name">John Student</p>
+            <p class="user-role">Stagiaire</p>
           </div>
         </div>
       </div>
@@ -78,10 +66,10 @@
           <span class="notification-badge">3</span>
         </button>
         <div class="user-menu" id="profileToggle">
-          <div class="avatar-large">MA</div>
+          <div class="avatar-large">JS</div>
           <div>
-            <p class="user-name">Mohammed Admin</p>
-            <p class="user-role">Admin</p>
+            <p class="user-name">John Student</p>
+            <p class="user-role">Stagiaire</p>
           </div>
           <i class="fas fa-chevron-down" id="chevronIcon"></i>
         </div>
@@ -90,32 +78,32 @@
       <!-- Profile Dropdown -->
       <div class="profile-dropdown" id="profileMenu">
         <div class="dropdown-header">
-          <div class="dropdown-avatar">MA</div>
+          <div class="dropdown-avatar">JS</div>
           <div class="dropdown-user-info">
-            <h4>Mohammed Admin</h4>
-            <p>Platform Admin</p>
-            <span class="role-badge role-badge-admin">Admin</span>
+            <h4>John Student</h4>
+            <p>Platform Stagiaire</p>
+            <span class="role-badge role-badge-stagiaire">Stagiaire</span>
           </div>
         </div>
         <div class="dropdown-meta">
-          <div class="meta-item"><i class="fas fa-envelope"></i> admin@ismo.com</div>
-          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 1/1/2022</div>
-          <div class="meta-item"><i class="fas fa-chart-line"></i> 8,500 Reputation Points</div>
-          <div class="meta-item"><i class="fas fa-medal"></i> 60 Skills Validated</div>
+          <div class="meta-item"><i class="fas fa-envelope"></i> student@ismo.com</div>
+          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 9/2/2023</div>
+          <div class="meta-item"><i class="fas fa-chart-line"></i> 1,245 Reputation Points</div>
+          <div class="meta-item"><i class="fas fa-medal"></i> 12 Skills Validated</div>
         </div>
         <div class="dropdown-actions">
-          <a href="../passport/passport.html" class="dropdown-action">
-            <i class="fas fa-shield"></i> Modération
+          <a href="../passport/passport.php" class="dropdown-action">
+            <i class="fas fa-download"></i> Download Skills Passport (PDF)
           </a>
-          <a href="../profile/profile.html" class="dropdown-action">
+          <a href="../profile/profile.php" class="dropdown-action">
             <i class="fas fa-user"></i> View Profile
           </a>
-          <a href="../parametre/parametres.html" class="dropdown-action">
+          <a href="../profile/profile.php" class="dropdown-action">
             <i class="fas fa-gear"></i> Settings
           </a>
         </div>
         <div class="dropdown-signout">
-          <a href="../../login/index.html" class="dropdown-action signout">
+          <a href="../../login/index.php" class="dropdown-action signout">
             <i class="fas fa-right-from-bracket"></i> Sign Out
           </a>
         </div>

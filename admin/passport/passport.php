@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="fr">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - Paramètres</title>
+  <title>ISMO-SkillSwap - Modération</title>
   <link rel="stylesheet" href="../../css/styles.css">
-  <link rel="stylesheet" href="parametres.css">
+  <link rel="stylesheet" href="passport.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
   <div class="container">
                 <aside class="sidebar sidebar-admin">
@@ -21,35 +23,35 @@
         </div>
       </div>
       <nav class="sidebar-nav">
-        <a href="../accueil/accueil.html" class="nav-item">
+        <a href="../accueil/accueil.php" class="nav-item">
           <i class="fas fa-home"></i>
           <span>Accueil</span>
         </a>
-        <a href="../marketplace/marketplace.html" class="nav-item">
+        <a href="../marketplace/marketplace.php" class="nav-item">
           <i class="fas fa-store"></i>
           <span>Marketplace</span>
         </a>
-        <a href="../profile/profile.html" class="nav-item">
+        <a href="../profile/profile.php" class="nav-item">
           <i class="fas fa-user"></i>
           <span>Profil</span>
         </a>
-        <a href="../passport/passport.html" class="nav-item">
+        <a href="../passport/passport.php" class="nav-item active">
           <i class="fas fa-shield"></i>
           <span>Modération</span>
         </a>
-        <a href="../classement/classement.html" class="nav-item">
+        <a href="../classement/classement.php" class="nav-item">
           <i class="fas fa-ranking-star"></i>
           <span>Classement</span>
         </a>
-        <a href="../validation/validations.html" class="nav-item">
+        <a href="../validation/validations.php" class="nav-item">
           <i class="fas fa-check-circle"></i>
           <span>Validations</span>
         </a>
-        <a href="../badge/badges.html" class="nav-item">
+        <a href="../badge/badges.php" class="nav-item">
           <i class="fas fa-trophy"></i>
           <span>Badges</span>
         </a>
-        <a href="../parametre/parametres.html" class="nav-item active">
+        <a href="../parametre/parametres.php" class="nav-item">
           <i class="fas fa-cog"></i>
           <span>Paramètres</span>
         </a>
@@ -102,18 +104,18 @@
           <div class="meta-item"><i class="fas fa-medal"></i> 60 Skills Validated</div>
         </div>
         <div class="dropdown-actions">
-          <a href="../passport/passport.html" class="dropdown-action">
+          <a href="../passport/passport.php" class="dropdown-action">
             <i class="fas fa-shield"></i> Modération
           </a>
-          <a href="../profile/profile.html" class="dropdown-action">
+          <a href="../profile/profile.php" class="dropdown-action">
             <i class="fas fa-user"></i> View Profile
           </a>
-          <a href="../parametre/parametres.html" class="dropdown-action">
+          <a href="../parametre/parametres.php" class="dropdown-action">
             <i class="fas fa-gear"></i> Settings
           </a>
         </div>
         <div class="dropdown-signout">
-          <a href="../../login/index.html" class="dropdown-action signout">
+          <a href="../../login/index.php" class="dropdown-action signout">
             <i class="fas fa-right-from-bracket"></i> Sign Out
           </a>
         </div>
@@ -121,84 +123,66 @@
     </header>
 
     <main class="main-content">
-
-      <section class="profile-container">
-        <h2>Paramètres de la Plateforme</h2>
-        <p class="subtitle">Configurez les paramètres globaux de ISMO-SkillSwap</p>
-
-        <div class="settings-grid">
-          <div class="settings-card">
-            <div class="settings-header"><i class="fas fa-sliders-h"></i><h3>Paramètres Généraux</h3></div>
-            <div class="settings-form">
-              <div class="form-group">
-                <label>Nom de la plateforme</label>
-                <input type="text" value="ISMO-SkillSwap" class="form-input">
-              </div>
-              <div class="form-group">
-                <label>Description</label>
-                <textarea class="form-textarea">Plateforme d'entraide pour les stagiaires de l'ISMO Tétouan</textarea>
-              </div>
-              <div class="form-group checkbox">
-                <input type="checkbox" checked> Inscription publique
-              </div>
-              <div class="form-group checkbox">
-                <input type="checkbox"> Validation manuelle des comptes
-              </div>
-            </div>
-          </div>
-
-          <div class="settings-card">
-            <div class="settings-header"><i class="fas fa-bell"></i><h3>Notifications</h3></div>
-            <div class="settings-form">
-              <div class="form-group toggle">
-                <label>Email de bienvenue</label>
-                <input type="checkbox" class="toggle-input" checked>
-              </div>
-              <div class="form-group toggle">
-                <label>Notifications de validation</label>
-                <input type="checkbox" class="toggle-input" checked>
-              </div>
-              <div class="form-group toggle">
-                <label>Alertes de modération</label>
-                <input type="checkbox" class="toggle-input" checked>
-              </div>
-            </div>
-          </div>
-
-          <div class="settings-card full-width">
-            <div class="settings-header"><i class="fas fa-lock"></i><h3>Sécurité et Permissions</h3></div>
-            <div class="settings-form">
-              <div class="form-group">
-                <label>Durée de session (minutes)</label>
-                <input type="number" value="60" class="form-input">
-              </div>
-              <div class="form-group toggle">
-                <label>Authentification à deux facteurs</label>
-                <input type="checkbox" class="toggle-input">
-              </div>
-              <div class="form-group toggle">
-                <label>Logs d'activité</label>
-                <input type="checkbox" class="toggle-input" checked>
-              </div>
-            </div>
-          </div>
-
-          <div class="settings-card full-width">
-            <div class="settings-header"><i class="fas fa-database"></i><h3>Base de Données</h3></div>
-            <div class="settings-info">
-              <div class="info-row"><span>Dernière sauvegarde</span><strong>Il y a 2 heures</strong></div>
-              <div class="info-row"><span>Espace utilisé</span><strong>42.8 GB / 100 GB</strong></div>
-              <button class="btn primary-btn">Effectuer une sauvegarde</button>
-            </div>
-          </div>
+      <section class="page-top">
+        <div>
+          <h1>Modération des signalements</h1>
+          <p class="page-copy">Gérez les publications signalées par les utilisateurs.</p>
         </div>
-
-        <div class="settings-actions">
-          <button class="btn secondary-btn">Annuler</button>
-          <button class="btn primary-btn">Enregistrer les modifications</button>
-        </div>
-
       </section>
+
+      <div class="reported-grid">
+
+        <article class="reported-card" data-id="0">
+          <div class="reported-head">
+            <div class="reported-meta">
+              <span class="avatar-sm">AL</span>
+              <div>
+                <strong>Alice Lopez</strong>
+                <small>Signalé le 22/05/2024</small>
+              </div>
+            </div>
+            <span class="report-count"><i class="fas fa-exclamation-triangle"></i> 3 signalements</span>
+          </div>
+          <div class="reported-body">
+            <h3>Problème d'alignement CSS Grid</h3>
+            <p>Les éléments de ma grille ne s'alignent pas correctement sur mobile.</p>
+            <div class="tag-list">
+              <span class="tag">CSS</span>
+              <span class="tag">Dev Web & Mobile</span>
+            </div>
+          </div>
+          <div class="reported-actions">
+            <button class="btn primary" onclick="this.closest('.reported-card').remove()"><i class="fas fa-trash-can"></i> Supprimer</button>
+            <button class="btn secondary" onclick="this.closest('.reported-card').remove()"><i class="fas fa-check"></i> Ignorer</button>
+          </div>
+        </article>
+
+        <article class="reported-card" data-id="1">
+          <div class="reported-head">
+            <div class="reported-meta">
+              <span class="avatar-sm">MJ</span>
+              <div>
+                <strong>Mike Johnson</strong>
+                <small>Signalé le 21/05/2024</small>
+              </div>
+            </div>
+            <span class="report-count"><i class="fas fa-exclamation-triangle"></i> 1 signalement</span>
+          </div>
+          <div class="reported-body">
+            <h3>Optimisation requête SQL complexe</h3>
+            <p>Besoin d'aide pour optimiser une requête avec plusieurs JOIN qui est très lente.</p>
+            <div class="tag-list">
+              <span class="tag">SQL</span>
+              <span class="tag">Data Engineering</span>
+            </div>
+          </div>
+          <div class="reported-actions">
+            <button class="btn primary" onclick="this.closest('.reported-card').remove()"><i class="fas fa-trash-can"></i> Supprimer</button>
+            <button class="btn secondary" onclick="this.closest('.reported-card').remove()"><i class="fas fa-check"></i> Ignorer</button>
+          </div>
+        </article>
+
+      </div>
     </main>
   </div>
   <script>
@@ -218,4 +202,5 @@
     });
   </script>
 </body>
+
 </html>

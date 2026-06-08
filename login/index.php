@@ -3,21 +3,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     extract($_POST);
     if (isset($login)) {
         $err = [];
-        if (!isset($email, FILTER_VALIDATE_EMAIL) || $email == "") $err["email"] = "l'email est invalide";
-        if (!isset($password) || $password == "") $err["password"] = "le mot de passe est invalide";
+        if (!isset($email) || $email == "") $err["email"] = "l'email est invalide";
+        if (!isset($motdepasse) || $motdepasse == "") $err["motdepasse"] = "le mot de passe est invalide";
         if (empty($err)){
             $email = htmlspecialchars($email);
-            $password = htmlspecialchars($password);
+            $motdepasse = hash('sha256', $motdepasse);
             include("../dbopen/db.php");
             try {
-                $reqi=$db->prepare("INSERT INTO Personne(email,motdepasse) VALUES(?,?)");
-                $r=$reqi->execute([$email,$password]);
-                if($r==false) $err["errconnection"]="erreur de connexion";
-                else echo "<div style='color:green'>connexion reussie</div>";
-            }   
-            catch (PDOException $e) {
+                $reqi=$db->prepare("SELECT role FROM utilisateurs WHERE email=? AND motdepasse=?");
+                $r=$reqi->execute([$email,$motdepasse]);
+                $user = $reqi->fetch(PDO::FETCH_ASSOC);
+                if($user==false) $err["errconnection"]="erreur de connexion";
+                else {
+                if ($user) {
+                $role = $user['role'];
+                if ($role == "admin") {
+                    header("Location: ../admin/accueil/accueil.php");
+                    exit;
+                } elseif ($role == "formateur") {
+                    header("Location: ../formateur/accueil/accueil.php");
+                    exit;
+                } elseif ($role == "stagiaire") {
+                    header("Location: ../stagiaire/accueil/accueil.php");
+                    exit;
+                } else {
+                    $err["errconnection"] = "Utilisateur introuvable ou login incorrect";
+                }
+               }
+              }
+            }catch (PDOException $e) {
                 echo "Erreur: " . $e->getMessage();
-            }
+              }
         }
     }
 }
@@ -35,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <div class="container">
     <aside class="left">
       <a class="back" href="#">← Retour à l'accueil</a>
-
       <div class="brand">
         <div class="logo">🏆</div>
         <div class="brand-text">
@@ -75,17 +90,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <h3>Bienvenue</h3>
         <p class="sub">Connecte-toi pour continuer</p>
 
-        <form id="loginForm">
+        <form id="loginForm" method="POST">
           <label class="field">
             <span class="label">Email</span>
+            <input name="email" type="email" placeholder="votre.email@ismo.ma" >
             <?php if (isset($err["email"])) echo "<div style='color:red'>" . $err["email"] . "</div>"; ?>
-            <input name="email" type="email" placeholder="votre.email@ismo.ma" required>
           </label>
 
           <label class="field">
             <span class="label">Mot de passe</span>
-            <?php if (isset($err["password"])) echo "<div style='color:red'>" . $err["password"] . "</div>"; ?>
-            <input name="password" type="password" placeholder="••••••••" required>
+            <input id="motdepasse" name="motdepasse" type="password" placeholder="••••••••">
+            <?php if (isset($err["motdepasse"])) echo "<div style='color:red'>" . $err["motdepasse"] . "</div>"; ?>
           </label>
 
           <label class="checkbox">
@@ -94,28 +109,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
           <button class="btn primary" name="login" type="submit">Se connecter</button>
         </form>
-
-        <p class="signup">Pas encore de compte ? <a href="../inscription/index.html">S'inscrire</a></p>
+        <p class="signup">Pas encore de compte ? <a href="../inscription/index.php">S'inscrire</a></p>
       </div>
     </main>
   </div>
 
   <script>
     document.getElementById('showPass').addEventListener('change', function(e){
-      const pw = document.getElementById('password');
+      const pw = document.getElementById('motdepasse');
       pw.type = this.checked ? 'text' : 'password';
     });
 
     document.querySelectorAll('.demo').forEach(btn=>{
       btn.addEventListener('click', function(){
         document.getElementById('email').value = this.dataset.email;
-        document.getElementById('password').value = this.dataset.pass;
+        document.getElementById('motdepasse').value = this.dataset.pass;
       });
-    });
-
-    document.getElementById('loginForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      alert('Demo: formulaire soumis (ici vous ajoutez la logique serveur)');
     });
   </script>
 </body>

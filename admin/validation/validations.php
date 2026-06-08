@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - Badges</title>
+  <title>Admin - Validations</title>
   <link rel="stylesheet" href="../../css/styles.css">
-  <link rel="stylesheet" href="badges.css">
+  <link rel="stylesheet" href="validations.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -21,35 +21,35 @@
         </div>
       </div>
       <nav class="sidebar-nav">
-        <a href="../accueil/accueil.html" class="nav-item">
+        <a href="../accueil/accueil.php" class="nav-item">
           <i class="fas fa-home"></i>
           <span>Accueil</span>
         </a>
-        <a href="../marketplace/marketplace.html" class="nav-item">
+        <a href="../marketplace/marketplace.php" class="nav-item">
           <i class="fas fa-store"></i>
           <span>Marketplace</span>
         </a>
-        <a href="../profile/profile.html" class="nav-item">
+        <a href="../profile/profile.php" class="nav-item">
           <i class="fas fa-user"></i>
           <span>Profil</span>
         </a>
-        <a href="../passport/passport.html" class="nav-item">
+        <a href="../passport/passport.php" class="nav-item">
           <i class="fas fa-shield"></i>
           <span>Modération</span>
         </a>
-        <a href="../classement/classement.html" class="nav-item">
+        <a href="../classement/classement.php" class="nav-item">
           <i class="fas fa-ranking-star"></i>
           <span>Classement</span>
         </a>
-        <a href="../validation/validations.html" class="nav-item">
+        <a href="../validation/validations.php" class="nav-item active">
           <i class="fas fa-check-circle"></i>
           <span>Validations</span>
         </a>
-        <a href="../badge/badges.html" class="nav-item active">
+        <a href="../badge/badges.php" class="nav-item">
           <i class="fas fa-trophy"></i>
           <span>Badges</span>
         </a>
-        <a href="../parametre/parametres.html" class="nav-item">
+        <a href="../parametre/parametres.php" class="nav-item">
           <i class="fas fa-cog"></i>
           <span>Paramètres</span>
         </a>
@@ -65,8 +65,7 @@
       </div>
     </aside>
 
-    <main class="main-content">
-          <header class="top-header">
+        <header class="top-header">
       <div class="search-bar">
         <i class="fas fa-search"></i>
         <input type="text" placeholder="Rechercher...">
@@ -103,32 +102,88 @@
           <div class="meta-item"><i class="fas fa-medal"></i> 60 Skills Validated</div>
         </div>
         <div class="dropdown-actions">
-          <a href="../passport/passport.html" class="dropdown-action">
+          <a href="../passport/passport.php" class="dropdown-action">
             <i class="fas fa-shield"></i> Modération
           </a>
-          <a href="../profile/profile.html" class="dropdown-action">
+          <a href="../profile/profile.php" class="dropdown-action">
             <i class="fas fa-user"></i> View Profile
           </a>
-          <a href="../parametre/parametres.html" class="dropdown-action">
+          <a href="../parametre/parametres.php" class="dropdown-action">
             <i class="fas fa-gear"></i> Settings
           </a>
         </div>
         <div class="dropdown-signout">
-          <a href="../../login/index.html" class="dropdown-action signout">
+          <a href="../../login/index.php" class="dropdown-action signout">
             <i class="fas fa-right-from-bracket"></i> Sign Out
           </a>
         </div>
       </div>
     </header>
 
-      <section class="profile-container">
-        <h2>Gestion des Badges</h2>
-        <p style="color:#6b7280;margin-bottom:18px;">Créez et attribuez des badges aux stagiaires</p>
+    <main class="main-content">
 
-        <div class="badges-grid">
-          <div class="badge-card"><div class="icon">⭐</div><h4>Premier Aide</h4><p>A aidé son premier camarade</p></div>
-          <div class="badge-card"><div class="icon">⚡</div><h4>Réponse Rapide</h4><p>Réponse ultra-rapide</p></div>
-          <div class="badge-card"><div class="icon">⚙️</div><h4>Expert React</h4><p>Maîtrise avancée de React</p></div>
+      <section class="profile-container">
+        <h2>Demandes Récentes de Validation</h2>
+        <p class="subtitle">Gérez les demandes de validation des stagiaires</p>
+
+        <div class="filters-row">
+          <div class="filter-group">
+            <input type="text" placeholder="Rechercher par stagiaire ou compétence..." class="filter-input">
+            <select class="filter-select"><option>Tous</option></select>
+            <select class="filter-select"><option>Toutes</option></select>
+          </div>
+        </div>
+
+        <table class="validations-table">
+          <thead>
+            <tr>
+              <th>Stagiaire</th>
+              <th>Compétence</th>
+              <th>Niveau</th>
+              <th>Date</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Sarah Chen</strong></td>
+              <td>React Hooks</td>
+              <td><span class="level-badge intermed">Intermédiaire</span></td>
+              <td>17/05/2024</td>
+              <td><span class="status-badge pending">En attente</span></td>
+            </tr>
+            <tr>
+              <td><strong>Mike Johnson</strong></td>
+              <td>SQL Advanced</td>
+              <td><span class="level-badge advanced">Avancé</span></td>
+              <td>16/05/2024</td>
+              <td><span class="status-badge pending">En attente</span></td>
+            </tr>
+            <tr>
+              <td><strong>Emma Davis</strong></td>
+              <td>Git Workflow</td>
+              <td><span class="level-badge beginner">Débutant</span></td>
+              <td>16/05/2024</td>
+              <td><span class="status-badge validated">Validée</span></td>
+            </tr>
+            <tr>
+              <td><strong>Alex Kumar</strong></td>
+              <td>Docker Deploy</td>
+              <td><span class="level-badge intermed">Intermédiaire</span></td>
+              <td>15/05/2024</td>
+              <td><span class="status-badge validated">Validée</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="quick-actions">
+          <h3>Actions Rapides</h3>
+          <p>Gérez vos validations et stagiaires efficacement</p>
+          <div class="actions-grid">
+            <button class="action-btn primary">Valider des compétences</button>
+            <button class="action-btn secondary">Attribuer des badges</button>
+            <button class="action-btn secondary">Voir rapports</button>
+          </div>
         </div>
 
       </section>

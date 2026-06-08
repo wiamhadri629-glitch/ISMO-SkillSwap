@@ -12,7 +12,7 @@
 
 <body>
   <div class="container">
-                <aside class="sidebar sidebar-formateur">
+                <aside class="sidebar sidebar-stagiaire">
       <div class="sidebar-header">
         <div class="sidebar-logo">
           <i class="fas fa-graduation-cap"></i>
@@ -23,41 +23,33 @@
         </div>
       </div>
       <nav class="sidebar-nav">
-        <a href="../accueil/accueil.html" class="nav-item">
+        <a href="../accueil/accueil.php" class="nav-item">
           <i class="fas fa-home"></i>
           <span>Accueil</span>
         </a>
-        <a href="../marketplace/marketplace.html" class="nav-item">
+        <a href="../marketplace/marketplace.php" class="nav-item">
           <i class="fas fa-store"></i>
           <span>Marketplace</span>
         </a>
-        <a href="../profile/profile.html" class="nav-item active">
+        <a href="../profile/profile.php" class="nav-item active">
           <i class="fas fa-user"></i>
           <span>Profil</span>
         </a>
-        <a href="../passport/passport.html" class="nav-item">
+        <a href="../passport/passport.php" class="nav-item">
           <i class="fas fa-passport"></i>
           <span>Passport</span>
         </a>
-        <a href="../classement/classement.html" class="nav-item">
+        <a href="../classement/classement.php" class="nav-item">
           <i class="fas fa-ranking-star"></i>
           <span>Classement</span>
-        </a>
-        <a href="../validation/validations.html" class="nav-item">
-          <i class="fas fa-check-circle"></i>
-          <span>Validations</span>
-        </a>
-        <a href="../badge/badges.html" class="nav-item">
-          <i class="fas fa-trophy"></i>
-          <span>Badges</span>
         </a>
       </nav>
       <div class="sidebar-footer">
         <div class="user-info">
-          <div class="avatar">MF</div>
+          <div class="avatar">JS</div>
           <div>
-            <p class="user-name">Marc Formateur</p>
-            <p class="user-role">Formateur</p>
+            <p class="user-name">John Student</p>
+            <p class="user-role">Stagiaire</p>
           </div>
         </div>
       </div>
@@ -74,10 +66,10 @@
           <span class="notification-badge">3</span>
         </button>
         <div class="user-menu" id="profileToggle">
-          <div class="avatar-large">MF</div>
+          <div class="avatar-large">JS</div>
           <div>
-            <p class="user-name">Marc Formateur</p>
-            <p class="user-role">Formateur</p>
+            <p class="user-name">John Student</p>
+            <p class="user-role">Stagiaire</p>
           </div>
           <i class="fas fa-chevron-down" id="chevronIcon"></i>
         </div>
@@ -86,32 +78,32 @@
       <!-- Profile Dropdown -->
       <div class="profile-dropdown" id="profileMenu">
         <div class="dropdown-header">
-          <div class="dropdown-avatar">MF</div>
+          <div class="dropdown-avatar">JS</div>
           <div class="dropdown-user-info">
-            <h4>Marc Formateur</h4>
-            <p>Platform Formateur</p>
-            <span class="role-badge role-badge-formateur">Formateur</span>
+            <h4>John Student</h4>
+            <p>Platform Stagiaire</p>
+            <span class="role-badge role-badge-stagiaire">Stagiaire</span>
           </div>
         </div>
         <div class="dropdown-meta">
-          <div class="meta-item"><i class="fas fa-envelope"></i> formateur@ismo.com</div>
-          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 3/9/2022</div>
-          <div class="meta-item"><i class="fas fa-chart-line"></i> 4,200 Reputation Points</div>
-          <div class="meta-item"><i class="fas fa-medal"></i> 35 Skills Validated</div>
+          <div class="meta-item"><i class="fas fa-envelope"></i> student@ismo.com</div>
+          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 9/2/2023</div>
+          <div class="meta-item"><i class="fas fa-chart-line"></i> 1,245 Reputation Points</div>
+          <div class="meta-item"><i class="fas fa-medal"></i> 12 Skills Validated</div>
         </div>
         <div class="dropdown-actions">
-          <a href="../passport/passport.html" class="dropdown-action">
+          <a href="../passport/passport.php" class="dropdown-action">
             <i class="fas fa-download"></i> Download Skills Passport (PDF)
           </a>
-          <a href="../profile/profile.html" class="dropdown-action">
+          <a href="../profile/profile.php" class="dropdown-action">
             <i class="fas fa-user"></i> View Profile
           </a>
-          <a href="../profile/profile.html" class="dropdown-action">
+          <a href="../profile/profile.php" class="dropdown-action">
             <i class="fas fa-gear"></i> Settings
           </a>
         </div>
         <div class="dropdown-signout">
-          <a href="../../login/index.html" class="dropdown-action signout">
+          <a href="../../login/index.php" class="dropdown-action signout">
             <i class="fas fa-right-from-bracket"></i> Sign Out
           </a>
         </div>
@@ -130,7 +122,7 @@
             </div>
           </div>
           <div class="profile-actions-hero">
-            <button class="btn primary">Modifier profil</button>
+            <a href="modifier_profile.php" class="btn primary">Modifier profil</a>
           </div>
         </div>
         <div class="profile-stats-hero">
