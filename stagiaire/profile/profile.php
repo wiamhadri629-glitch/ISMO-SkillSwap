@@ -1,273 +1,195 @@
-<!doctype html>
+<?php
+session_start();
+if (!isset($_SESSION['id_user'])) {
+    header('Location: /phpprojet/login/index.php');
+    exit;
+}
+extract($_SESSION);
+$init = strtoupper(substr(isset($prenom) ? $prenom : '', 0, 1) . substr(isset($nom) ? $nom : '', 0, 1));
+$current_url = $_SERVER["PHP_SELF"];
+
+require_once __DIR__ . '/../../dbopen/db.php';
+
+$stmt = $db->prepare("SELECT c.nom, uc.niveau FROM user_competences uc JOIN competences c ON uc.id_competence = c.id_competence WHERE uc.id_user = ?");
+$stmt->execute([isset($id_user) ? $id_user : 0]);
+$competences = $stmt->fetchAll();
+
+$stmt = $db->prepare("SELECT b.id_badge, b.nom, b.image, b.points_requis, ob.date_obtention FROM badges b LEFT JOIN obtention_badges ob ON b.id_badge = ob.id_badge AND ob.id_user = ? ORDER BY b.id_badge");
+$stmt->execute([isset($id_user) ? $id_user : 0]);
+$badges_data = $stmt->fetchAll();
+
+$stmt = $db->prepare("SELECT id FROM aide_effectuee WHERE id_mentor = ?");
+$stmt->execute([isset($id_user) ? $id_user : 0]);
+$helps_given = count($stmt->fetchAll());
+
+$badge_obtained = 0;
+foreach ($badges_data as $b) {
+    if ($b['date_obtention']) $badge_obtained++;
+}
+$total_badges = count($badges_data);
+
+$niveau_map = ['debutant' => 'Débutant', 'intermediaire' => 'Intermédiaire', 'avance' => 'Avancé'];
+$niveau_class = ['debutant' => 'warning', 'intermediaire' => 'info', 'avance' => 'success'];
+$progress_width = ['debutant' => 35, 'intermediaire' => 65, 'avance' => 90];
+?>
+<!DOCTYPE html>
 <html lang="fr">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ISMO-SkillSwap - Profil</title>
-  <link rel="stylesheet" href="../../css/styles.css">
-  <link rel="stylesheet" href="profile.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISMO-SkillSwap - Profil</title>
+    <link rel="stylesheet" href="/phpprojet/css/styles.css">
+    <link rel="stylesheet" href="/phpprojet/css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-  <div class="container">
-                <aside class="sidebar sidebar-stagiaire">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">
-          <i class="fas fa-graduation-cap"></i>
-        </div>
-        <div>
-          <h1>ISMO-SkillSwap</h1>
-          <p>ISMO Tétouan</p>
-        </div>
-      </div>
-      <nav class="sidebar-nav">
-        <a href="../accueil/accueil.php" class="nav-item">
-          <i class="fas fa-home"></i>
-          <span>Accueil</span>
-        </a>
-        <a href="../marketplace/marketplace.php" class="nav-item">
-          <i class="fas fa-store"></i>
-          <span>Marketplace</span>
-        </a>
-        <a href="../profile/profile.php" class="nav-item active">
-          <i class="fas fa-user"></i>
-          <span>Profil</span>
-        </a>
-        <a href="../passport/passport.php" class="nav-item">
-          <i class="fas fa-passport"></i>
-          <span>Passport</span>
-        </a>
-        <a href="../classement/classement.php" class="nav-item">
-          <i class="fas fa-ranking-star"></i>
-          <span>Classement</span>
-        </a>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="user-info">
-          <div class="avatar">JS</div>
-          <div>
-            <p class="user-name">John Student</p>
-            <p class="user-role">Stagiaire</p>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-        <header class="top-header">
-      <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Rechercher...">
-      </div>
-      <div class="header-actions">
-        <button class="notification-btn">
-          <i class="fas fa-bell"></i>
-          <span class="notification-badge">3</span>
-        </button>
-        <div class="user-menu" id="profileToggle">
-          <div class="avatar-large">JS</div>
-          <div>
-            <p class="user-name">John Student</p>
-            <p class="user-role">Stagiaire</p>
-          </div>
-          <i class="fas fa-chevron-down" id="chevronIcon"></i>
-        </div>
-      </div>
-
-      <!-- Profile Dropdown -->
-      <div class="profile-dropdown" id="profileMenu">
-        <div class="dropdown-header">
-          <div class="dropdown-avatar">JS</div>
-          <div class="dropdown-user-info">
-            <h4>John Student</h4>
-            <p>Platform Stagiaire</p>
-            <span class="role-badge role-badge-stagiaire">Stagiaire</span>
-          </div>
-        </div>
-        <div class="dropdown-meta">
-          <div class="meta-item"><i class="fas fa-envelope"></i> student@ismo.com</div>
-          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 9/2/2023</div>
-          <div class="meta-item"><i class="fas fa-chart-line"></i> 1,245 Reputation Points</div>
-          <div class="meta-item"><i class="fas fa-medal"></i> 12 Skills Validated</div>
-        </div>
-        <div class="dropdown-actions">
-          <a href="../passport/passport.php" class="dropdown-action">
-            <i class="fas fa-download"></i> Download Skills Passport (PDF)
-          </a>
-          <a href="../profile/profile.php" class="dropdown-action">
-            <i class="fas fa-user"></i> View Profile
-          </a>
-          <a href="../profile/profile.php" class="dropdown-action">
-            <i class="fas fa-gear"></i> Settings
-          </a>
-        </div>
-        <div class="dropdown-signout">
-          <a href="../../login/index.php" class="dropdown-action signout">
-            <i class="fas fa-right-from-bracket"></i> Sign Out
-          </a>
-        </div>
-      </div>
-    </header>
-
-    <main class="main-content profile-page">
-      <section class="profile-hero">
-        <div class="profile-card">
-          <div class="profile-summary">
-            <div class="profile-avatar hero">SA</div>
+<div class="container">
+    <aside class="sidebar sidebar-stagiaire">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><i class="fas fa-graduation-cap"></i></div>
             <div>
-              <h2>Sarah Admin</h2>
-              <p>Platform Administrator</p>
-              <p class="member-since">Membre depuis 01/01/2022</p>
+                <h1>ISMO-SkillSwap</h1>
+                <p>ISMO Tétouan</p>
             </div>
-          </div>
-          <div class="profile-actions-hero">
-            <a href="modifier_profile.php" class="btn primary">Modifier profil</a>
-          </div>
         </div>
-        <div class="profile-stats-hero">
-          <article class="stat-card small">
-            <span class="stat-label">Aides réalisées</span>
-            <strong>32</strong>
-            <span class="stat-note">+5 ce mois</span>
-          </article>
-          <article class="stat-card small">
-            <span class="stat-label">Points de réputation</span>
-            <strong>8500</strong>
-            <span class="stat-note positive">+85 cette semaine</span>
-          </article>
-          <article class="stat-card small">
-            <span class="stat-label">Badges obtenus</span>
-            <strong>8/15</strong>
-            <span class="stat-note">7 restants</span>
-          </article>
+        <nav class="sidebar-nav">
+            <a href="/phpprojet/stagiaire/accueil/accueil.php" class="nav-item<?= strpos($current_url,'accueil')!==false?' active':'' ?>"><i class="fas fa-home"></i><span>Accueil</span></a>
+            <a href="/phpprojet/stagiaire/marketplace/marketplace.php" class="nav-item<?= strpos($current_url,'marketplace')!==false?' active':'' ?>"><i class="fas fa-store"></i><span>Marketplace</span></a>
+            <a href="/phpprojet/stagiaire/profile/profile.php" class="nav-item<?= strpos($current_url,'profile')!==false?' active':'' ?>"><i class="fas fa-user"></i><span>Profil</span></a>
+            <a href="/phpprojet/stagiaire/passport/passport.php" class="nav-item<?= strpos($current_url,'passport')!==false?' active':'' ?>"><i class="fas fa-passport"></i><span>Passport</span></a>
+            <a href="/phpprojet/stagiaire/classement/classement.php" class="nav-item<?= strpos($current_url,'classement')!==false?' active':'' ?>"><i class="fas fa-ranking-star"></i><span>Classement</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="avatar"><?= htmlspecialchars($init) ?></div>
+                <div>
+                    <p class="user-name"><?= htmlspecialchars((isset($prenom) ? $prenom : '') . ' ' . (isset($nom) ? $nom : '')) ?></p>
+                    <p class="user-role"><?= isset($role) ? ucfirst($role) : '' ?></p>
+                </div>
+            </div>
         </div>
-      </section>
+    </aside>
+    <header class="top-header">
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher..." id="globalSearch">
+        </div>
+        <div class="header-actions">
+            <button class="notification-btn"><i class="fas fa-bell"></i><span class="notification-badge">0</span></button>
+            <div class="user-menu" id="profileToggle">
+                <div class="avatar-large"><?= htmlspecialchars($init) ?></div>
+                <div>
+                    <p class="user-name"><?= htmlspecialchars((isset($prenom) ? $prenom : '') . ' ' . (isset($nom) ? $nom : '')) ?></p>
+                    <p class="user-role"><?= isset($role) ? ucfirst($role) : '' ?></p>
+                </div>
+                <i class="fas fa-chevron-down" id="chevronIcon"></i>
+            </div>
+        </div>
+        <div class="profile-dropdown" id="profileMenu">
+            <div class="dropdown-header">
+                <div class="dropdown-avatar"><?= htmlspecialchars($init) ?></div>
+                <div class="dropdown-user-info">
+                    <h4><?= htmlspecialchars((isset($prenom) ? $prenom : '') . ' ' . (isset($nom) ? $nom : '')) ?></h4>
+                    <p><?= (isset($filiere) ? $filiere : '') ? "Filière " . htmlspecialchars($filiere) : "Platform " . (isset($role) ? ucfirst($role) : '') ?></p>
+                    <span class="role-badge role-badge-stagiaire"><?= isset($role) ? ucfirst($role) : '' ?></span>
+                </div>
+            </div>
+            <div class="dropdown-meta">
+                <div class="meta-item"><i class="fas fa-envelope"></i> <?= htmlspecialchars(isset($email) ? $email : '') ?></div>
+                <div class="meta-item"><i class="fas fa-calendar"></i> Membre depuis <?= isset($date_inscription) ? date("d/m/Y",strtotime($date_inscription)) : '' ?></div>
+            </div>
+            <div class="dropdown-actions">
+                <a href="/phpprojet/stagiaire/passport/generate_pdf.php" class="dropdown-action"><i class="fas fa-download"></i> Télécharger le Passeport (PDF)</a>
+                <a href="/phpprojet/stagiaire/profile/profile.php" class="dropdown-action"><i class="fas fa-user"></i> Voir le profil</a>
+            </div>
+            <div class="dropdown-signout">
+                <a href="/phpprojet/login/deconnexion.php" class="dropdown-action signout"><i class="fas fa-right-from-bracket"></i> Déconnexion</a>
+            </div>
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="profile-hero">
+            <div class="profile-card">
+                <div class="profile-summary">
+                    <div class="profile-avatar hero"><?= htmlspecialchars($init) ?></div>
+                    <div>
+                        <h2><?= htmlspecialchars((isset($prenom) ? $prenom : '') . ' ' . (isset($nom) ? $nom : '')) ?></h2>
+                        <p><?= (isset($filiere) ? $filiere : '') ? htmlspecialchars("Filière $filiere") : 'Stagiaire' ?></p>
+                        <p class="member-since">Membre depuis <?= isset($date_inscription) ? date('d/m/Y', strtotime($date_inscription)) : '' ?></p>
+                    </div>
+                </div>
+                <div class="profile-actions-hero">
+                    <a href="modifier_profile.php" class="btn primary">Modifier profil</a>
+                </div>
+            </div>
+            <div class="profile-stats-hero">
+                <article class="stat-card small">
+                    <span class="stat-label">Aides réalisées</span>
+                    <strong><?= $helps_given ?></strong>
+                    <span class="stat-note">depuis l'inscription</span>
+                </article>
+                <article class="stat-card small">
+                    <span class="stat-label">Score</span>
+                    <strong><?= isset($score) ? htmlspecialchars((string)$score) : '0' ?></strong>
+                    <span class="stat-note positive">points</span>
+                </article>
+                <article class="stat-card small">
+                    <span class="stat-label">Badges obtenus</span>
+                    <strong><?= $badge_obtained ?>/<?= $total_badges ?></strong>
+                    <span class="stat-note"><?= $total_badges - $badge_obtained ?> restants</span>
+                </article>
+            </div>
+        </section>
 
-      <section class="competence-section">
-        <div class="section-heading">
-          <h3>Mes Compétences</h3>
-          <button class="add-competence-btn">+ Ajouter une compétence</button>
-        </div>
-        <div class="skills-grid">
-          <div class="skill-item">
-            <div class="skill-header">
-              <strong>React</strong>
-              <span class="skill-badge success">✔️ Intermédiaire</span>
+        <section class="competence-section">
+            <div class="section-heading">
+                <h3>Mes Compétences</h3>
+                <a href="/phpprojet/stagiaire/competences/ajouter_competence.php" class="add-competence-btn">+ Ajouter une compétence</a>
             </div>
-            <div class="progress-bar">
-              <div class="progress" style="width: 92%"></div>
+            <div class="skills-grid">
+                <?php if (!empty($competences)): ?>
+                <?php foreach ($competences as $comp):
+                    $niveau = $comp['niveau'];
+                    $label = $niveau_map[$niveau] ?? ucfirst($niveau);
+                    $class = $niveau_class[$niveau] ?? 'info';
+                    $width = $progress_width[$niveau] ?? 50;
+                ?>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <strong><?= htmlspecialchars($comp['nom']) ?></strong>
+                        <span class="skill-badge <?= $class ?>"><?= htmlspecialchars($label) ?></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: <?= $width ?>%"></div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+                <?php else: ?>
+                <p>Aucune compétence renseignée.</p>
+                <?php endif; ?>
             </div>
-          </div>
-          <div class="skill-item">
-            <div class="skill-header">
-              <strong>TypeScript</strong>
-              <span class="skill-badge info">Intermédiaire</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress" style="width: 78%"></div>
-            </div>
-          </div>
-          <div class="skill-item">
-            <div class="skill-header">
-              <strong>Node.js</strong>
-              <span class="skill-badge info">Intermédiaire</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress" style="width: 85%"></div>
-            </div>
-          </div>
-          <div class="skill-item">
-            <div class="skill-header">
-              <strong>Python</strong>
-              <span class="skill-badge warning">Débutant</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress" style="width: 55%"></div>
-            </div>
-          </div>
-          <div class="skill-item">
-            <div class="skill-header">
-              <strong>SQL</strong>
-              <span class="skill-badge success">Intermédiaire</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress" style="width: 82%"></div>
-            </div>
-          </div>
-          <div class="skill-item">
-            <div class="skill-header">
-              <strong>Docker</strong>
-              <span class="skill-badge warning">Débutant</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress" style="width: 45%"></div>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="badges-section">
-        <div class="section-heading">
-          <h3>Badges & Réalisations</h3>
-        </div>
-        <div class="badges-grid">
-          <article class="badge-card obtained">
-            <div class="badge-icon">⭐</div>
-            <h4>Premier Aide</h4>
-            <p>A aidé son premier camarade</p>
-            <span class="badge-status obtained">✔ Obtenu</span>
-          </article>
-          <article class="badge-card obtained">
-            <div class="badge-icon">⚛️</div>
-            <h4>Expert React</h4>
-            <p>Résolu 10 problèmes React</p>
-            <span class="badge-status obtained">✔ Obtenu</span>
-          </article>
-          <article class="badge-card obtained">
-            <div class="badge-icon">⚡</div>
-            <h4>Réponse Rapide</h4>
-            <p>Répondu en moins d'1 heure</p>
-            <span class="badge-status obtained">✔ Obtenu</span>
-          </article>
-          <article class="badge-card locked">
-            <div class="badge-icon">👨‍💻</div>
-            <h4>Mentor Code</h4>
-            <p>Aidé 50 stagiaires</p>
-            <span class="badge-status locked">Verrouillé</span>
-          </article>
-          <article class="badge-card locked">
-            <div class="badge-icon">🔧</div>
-            <h4>Git Guru</h4>
-            <p>Résolu 20 problèmes Git</p>
-            <span class="badge-status locked">Verrouillé</span>
-          </article>
-          <article class="badge-card locked">
-            <div class="badge-icon">🤝</div>
-            <h4>Team Player</h4>
-            <p>Collaboré sur 15 solutions</p>
-            <span class="badge-status locked">Verrouillé</span>
-          </article>
-        </div>
-      </section>
+        <section class="badges-section">
+            <div class="section-heading">
+                <h3>Badges & Réalisations</h3>
+            </div>
+            <div class="badges-grid">
+                <?php foreach ($badges_data as $badge):
+                    $obtained = $badge['date_obtention'] !== null;
+                ?>
+                <article class="badge-card <?= $obtained ? 'obtained' : 'locked' ?>">
+                    <div class="badge-icon"><?= $badge['image'] ? '<img src="' . htmlspecialchars($badge['image']) . '" alt="' . htmlspecialchars($badge['nom']) . '">' : ($obtained ? '🏅' : '🔒') ?></div>
+                    <h4><?= htmlspecialchars($badge['nom']) ?></h4>
+                    <p><?= $badge['points_requis'] ? htmlspecialchars((string)$badge['points_requis']) . ' points requis' : '' ?></p>
+                    <span class="badge-status <?= $obtained ? 'obtained' : 'locked' ?>"><?= $obtained ? '✔ Obtenu' : 'Verrouillé' ?></span>
+                </article>
+                <?php endforeach; ?>
+            </div>
+        </section>
     </main>
-  </div>
-  <script>
-    const profileToggle = document.getElementById('profileToggle');
-    const profileMenu   = document.getElementById('profileMenu');
-    const chevronIcon   = document.getElementById('chevronIcon');
-    profileToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      profileMenu.classList.toggle('open');
-      chevronIcon.classList.toggle('rotated');
-    });
-    document.addEventListener('click', (e) => {
-      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-        profileMenu.classList.remove('open');
-        chevronIcon.classList.remove('rotated');
-      }
-    });
-  </script>
+</div>
+<script src="/phpprojet/js/profile-menu.js"></script>
+<script src="/phpprojet/js/search.js"></script>
 </body>
-
 </html>

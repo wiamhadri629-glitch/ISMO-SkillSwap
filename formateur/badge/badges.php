@@ -1,322 +1,316 @@
-<!doctype html>
+<?php
+session_start();
+if (!isset($_SESSION['id_user'])) {
+    header('Location: /phpprojet/login/index.php');
+    exit;
+}
+extract($_SESSION);
+if ($role !== 'formateur') {
+    header('Location: /phpprojet/login/index.php');
+    exit;
+}
+$init = strtoupper(substr($prenom, 0, 1) . substr($nom, 0, 1));
+$current_url = $_SERVER["PHP_SELF"];
+
+require_once __DIR__ . '/../../dbopen/db.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign_badge'])) {
+    extract($_POST);
+    $id_user = (int)$id_user;
+    $id_badge = (int)$id_badge;
+    $stmt = $db->prepare("SELECT id_user FROM obtention_badges WHERE id_user = ? AND id_badge = ?");
+    $stmt->execute([$id_user, $id_badge]);
+    if (count($stmt->fetchAll()) == 0) {
+        $stmt = $db->prepare("INSERT INTO obtention_badges (id_user, id_badge, date_obtention) VALUES (?, ?, NOW())");
+        $stmt->execute([$id_user, $id_badge]);
+    }
+    header('Location: badges.php');
+    exit;
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['retirer_badge'])) {
+    extract($_POST);
+    $id_user = (int)$id_user;
+    $id_badge = (int)$id_badge;
+    $stmt = $db->prepare("DELETE FROM obtention_badges WHERE id_user = ? AND id_badge = ?");
+    $stmt->execute([$id_user, $id_badge]);
+    header('Location: badges.php');
+    exit;
+}
+
+$stmt = $db->prepare("SELECT * FROM badges ORDER BY points_requis ASC");
+$stmt->execute();
+$badges = $stmt->fetchAll();
+
+$stmt = $db->prepare("SELECT id_badge FROM badges");
+$stmt->execute();
+$total_badges_count = count($stmt->fetchAll());
+
+$stmt = $db->prepare("SELECT date_obtention FROM obtention_badges WHERE MONTH(date_obtention) = MONTH(CURDATE()) AND YEAR(date_obtention) = YEAR(CURDATE())");
+$stmt->execute();
+$monthly_assigned = count($stmt->fetchAll());
+
+$stmt = $db->prepare("SELECT DISTINCT id_user FROM obtention_badges");
+$stmt->execute();
+$badged_students = count($stmt->fetchAll());
+
+$stmt = $db->prepare("SELECT u.id_user, u.nom, u.prenom FROM utilisateurs u WHERE u.role = 'stagiaire' ORDER BY u.nom ASC");
+$stmt->execute();
+$students = $stmt->fetchAll();
+
+$stmt = $db->prepare("
+    SELECT ob.date_obtention, b.nom as badge_nom, b.image,
+           u.nom as user_nom, u.prenom as user_prenom,
+           ob.id_user, ob.id_badge
+    FROM obtention_badges ob
+    JOIN badges b ON ob.id_badge = b.id_badge
+    JOIN utilisateurs u ON ob.id_user = u.id_user
+    ORDER BY ob.date_obtention DESC
+    LIMIT 20
+");
+$stmt->execute();
+$attributions = $stmt->fetchAll();
+?>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Formateur - Badges</title>
-  <link rel="stylesheet" href="../../css/styles.css">
-  <link rel="stylesheet" href="badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISMO-SkillSwap - Badges</title>
+    <link rel="stylesheet" href="/phpprojet/css/styles.css">
+    <link rel="stylesheet" href="badges.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <div class="container">
-                <aside class="sidebar sidebar-formateur">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">
-          <i class="fas fa-graduation-cap"></i>
+<div class="container">
+    <aside class="sidebar sidebar-formateur">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><i class="fas fa-graduation-cap"></i></div>
+            <div>
+                <h1>ISMO-SkillSwap</h1>
+                <p>ISMO Tétouan</p>
+            </div>
         </div>
-        <div>
-          <h1>ISMO-SkillSwap</h1>
-          <p>ISMO Tétouan</p>
+        <nav class="sidebar-nav">
+            <a href="/phpprojet/formateur/accueil/accueil.php" class="nav-item<?= strpos($current_url,'accueil')!==false?' active':'' ?>"><i class="fas fa-home"></i><span>Accueil</span></a>
+            <a href="/phpprojet/formateur/marketplace/marketplace.php" class="nav-item<?= strpos($current_url,'marketplace')!==false?' active':'' ?>"><i class="fas fa-store"></i><span>Marketplace</span></a>
+            <a href="/phpprojet/formateur/profile/profile.php" class="nav-item<?= strpos($current_url,'profile')!==false?' active':'' ?>"><i class="fas fa-user"></i><span>Profil</span></a>
+            <a href="/phpprojet/formateur/passport/passport.php" class="nav-item<?= strpos($current_url,'passport')!==false?' active':'' ?>"><i class="fas fa-passport"></i><span>Passport</span></a>
+            <a href="/phpprojet/formateur/validation/validations.php" class="nav-item<?= strpos($current_url,'validation')!==false?' active':'' ?>"><i class="fas fa-check-circle"></i><span>Validations</span></a>
+            <a href="/phpprojet/formateur/badge/badges.php" class="nav-item<?= strpos($current_url,'badge')!==false?' active':'' ?>"><i class="fas fa-medal"></i><span>Badges</span></a>
+            <a href="/phpprojet/formateur/classement/classement.php" class="nav-item<?= strpos($current_url,'classement')!==false?' active':'' ?>"><i class="fas fa-ranking-star"></i><span>Classement</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="avatar"><?= $init ?></div>
+                <div>
+                    <p class="user-name"><?= htmlspecialchars("$prenom $nom") ?></p>
+                    <p class="user-role"><?= ucfirst($role) ?></p>
+                </div>
+            </div>
         </div>
-      </div>
-      <nav class="sidebar-nav">
-        <a href="../accueil/accueil.php" class="nav-item">
-          <i class="fas fa-home"></i>
-          <span>Accueil</span>
-        </a>
-        <a href="../marketplace/marketplace.php" class="nav-item">
-          <i class="fas fa-store"></i>
-          <span>Marketplace</span>
-        </a>
-        <a href="../profile/profile.php" class="nav-item">
-          <i class="fas fa-user"></i>
-          <span>Profil</span>
-        </a>
-        <a href="../passport/passport.php" class="nav-item">
-          <i class="fas fa-passport"></i>
-          <span>Passport</span>
-        </a>
-        <a href="../classement/classement.php" class="nav-item">
-          <i class="fas fa-ranking-star"></i>
-          <span>Classement</span>
-        </a>
-        <a href="../validation/validations.php" class="nav-item">
-          <i class="fas fa-check-circle"></i>
-          <span>Validations</span>
-        </a>
-        <a href="../badge/badges.php" class="nav-item active">
-          <i class="fas fa-trophy"></i>
-          <span>Badges</span>
-        </a>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="user-info">
-          <div class="avatar">MF</div>
-          <div>
-            <p class="user-name">Marc Formateur</p>
-            <p class="user-role">Formateur</p>
-          </div>
-        </div>
-      </div>
     </aside>
-
-    
-          <header class="top-header">
-      <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Rechercher...">
-      </div>
-      <div class="header-actions">
-        <button class="notification-btn">
-          <i class="fas fa-bell"></i>
-          <span class="notification-badge">3</span>
-        </button>
-        <div class="user-menu" id="profileToggle">
-          <div class="avatar-large">MF</div>
-          <div>
-            <p class="user-name">Marc Formateur</p>
-            <p class="user-role">Formateur</p>
-          </div>
-          <i class="fas fa-chevron-down" id="chevronIcon"></i>
+    <header class="top-header">
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher..." id="globalSearch">
         </div>
-      </div>
-      <!-- Profile Dropdown -->
-      <div class="profile-dropdown" id="profileMenu">
-        <div class="dropdown-header">
-          <div class="dropdown-avatar">MF</div>
-          <div class="dropdown-user-info">
-            <h4>Marc Formateur</h4>
-            <p>Platform Formateur</p>
-            <span class="role-badge role-badge-formateur">Formateur</span>
-          </div>
+        <div class="header-actions">
+            <button class="notification-btn"><i class="fas fa-bell"></i><span class="notification-badge">0</span></button>
+            <div class="user-menu" id="profileToggle">
+                <div class="avatar-large"><?= $init ?></div>
+                <div>
+                    <p class="user-name"><?= htmlspecialchars("$prenom $nom") ?></p>
+                    <p class="user-role"><?= ucfirst($role) ?></p>
+                </div>
+                <i class="fas fa-chevron-down" id="chevronIcon"></i>
+            </div>
         </div>
-        <div class="dropdown-meta">
-          <div class="meta-item"><i class="fas fa-envelope"></i> formateur@ismo.com</div>
-          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 3/9/2022</div>
-          <div class="meta-item"><i class="fas fa-chart-line"></i> 4,200 Reputation Points</div>
-          <div class="meta-item"><i class="fas fa-medal"></i> 35 Skills Validated</div>
+        <div class="profile-dropdown" id="profileMenu">
+            <div class="dropdown-header">
+                <div class="dropdown-avatar"><?= $init ?></div>
+                <div class="dropdown-user-info">
+                    <h4><?= htmlspecialchars("$prenom $nom") ?></h4>
+                    <p><?= $filiere ? "Filière $filiere" : "Platform ".ucfirst($role) ?></p>
+                    <span class="role-badge role-badge-formateur"><?= ucfirst($role) ?></span>
+                </div>
+            </div>
+            <div class="dropdown-meta">
+                <div class="meta-item"><i class="fas fa-envelope"></i> <?= htmlspecialchars($email) ?></div>
+                <div class="meta-item"><i class="fas fa-calendar"></i> Membre depuis <?= date("d/m/Y",strtotime($date_inscription)) ?></div>
+            </div>
+            <div class="dropdown-actions">
+                <a href="/phpprojet/formateur/passport/passport.php" class="dropdown-action"><i class="fas fa-download"></i> Télécharger le Passeport (PDF)</a>
+                <a href="/phpprojet/formateur/profile/profile.php" class="dropdown-action"><i class="fas fa-user"></i> Voir le profil</a>
+            </div>
+            <div class="dropdown-signout">
+                <a href="/phpprojet/login/deconnexion.php" class="dropdown-action signout"><i class="fas fa-right-from-bracket"></i> Déconnexion</a>
+            </div>
         </div>
-        <div class="dropdown-actions">
-          <a href="../passport/passport.php" class="dropdown-action">
-            <i class="fas fa-download"></i> Download Skills Passport (PDF)
-          </a>
-          <a href="../profile/profile.php" class="dropdown-action">
-            <i class="fas fa-user"></i> View Profile
-          </a>
-          <a href="../profile/profile.php" class="dropdown-action">
-            <i class="fas fa-gear"></i> Settings
-          </a>
-        </div>
-        <div class="dropdown-signout">
-          <a href="../../login/index.php" class="dropdown-action signout">
-            <i class="fas fa-right-from-bracket"></i> Sign Out
-          </a>
-        </div>
-      </div>
     </header>
+    <main class="main-content">
+        <section class="profile-container">
+            <h2>Gestion des Badges</h2>
+            <p class="subtitle">Créez et attribuez des badges aux stagiaires</p>
 
-      <main class="main-content">
-      <section class="profile-container">
-        <h2>Gestion des Badges</h2>
-        <p class="subtitle">Créez et attribuez des badges aux stagiaires</p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3>Total Badges</h3>
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-value"><?= $total_badges_count ?></div>
+                    <div class="stat-change">Badges disponibles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3>Attribués ce mois</h3>
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div class="stat-value"><?= $monthly_assigned ?></div>
+                    <div class="stat-change positive">Ce mois</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3>Stagiaires Badgés</h3>
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-value"><?= $badged_students ?></div>
+                    <div class="stat-change">Total distincts</div>
+                </div>
+            </div>
 
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-header">
-              <h3>Total Badges</h3>
-              <i class="fas fa-trophy"></i>
-            </div>
-            <div class="stat-value">12</div>
-            <div class="stat-change">6 catégories différentes</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-header">
-              <h3>Attribués ce mois</h3>
-              <i class="fas fa-award"></i>
-            </div>
-            <div class="stat-value">28</div>
-            <div class="stat-change positive">+8 ce mois</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-header">
-              <h3>Stagiaires Badgés</h3>
-              <i class="fas fa-users"></i>
-            </div>
-            <div class="stat-value">18</div>
-            <div class="stat-change">sur 24 stagiaires</div>
-          </div>
-        </div>
+            <section class="badges-section">
+                <h3>Badges Disponibles</h3>
+                <div class="badges-grid">
+                    <?php foreach ($badges as $badge): ?>
+                    <?php
+                    $stmt = $db->prepare("SELECT id_user FROM obtention_badges WHERE id_badge = ?");
+                    $stmt->execute([$badge['id_badge']]);
+                    $assigned_count = count($stmt->fetchAll());
+                    ?>
+                    <div class="badge-card">
+                        <div class="badge-icon"><?= htmlspecialchars($badge['image'] ?? '🏅') ?></div>
+                        <h4><?= htmlspecialchars($badge['nom']) ?></h4>
+                        <p><?= $badge['points_requis'] ?> points requis</p>
+                        <span class="badge-status obtained"><?= $assigned_count ?> attribués</span>
+                    </div>
+                    <?php endforeach; ?>
+                    <?php if (empty($badges)): ?>
+                    <p>Aucun badge défini.</p>
+                    <?php endif; ?>
+                </div>
+            </section>
 
-        <section class="badges-section">
-          <h3>Badges Disponibles</h3>
-          <div class="badges-grid">
-            <div class="badge-card">
-              <div class="badge-icon">⭐</div>
-              <h4>Premier Aide</h4>
-              <p>A aidé son premier camarade</p>
-              <span class="badge-status obtained">7 attribués</span>
-            </div>
-            <div class="badge-card">
-              <div class="badge-icon">⚡</div>
-              <h4>Réponse Rapide</h4>
-              <p>Réponse ultra-rapide aux questions</p>
-              <span class="badge-status obtained">5 attribués</span>
-            </div>
-            <div class="badge-card">
-              <div class="badge-icon">⚛️</div>
-              <h4>Expert React</h4>
-              <p>Maîtrise avancée de React</p>
-              <span class="badge-status obtained">4 attribués</span>
-            </div>
-            <div class="badge-card">
-              <div class="badge-icon">🐍</div>
-              <h4>Python Master</h4>
-              <p>Maîtrise avancée de Python</p>
-              <span class="badge-status obtained">6 attribués</span>
-            </div>
-            <div class="badge-card">
-              <div class="badge-icon">💾</div>
-              <h4>SQL Wizard</h4>
-              <p>Expert en bases de données</p>
-              <span class="badge-status obtained">3 attribués</span>
-            </div>
-            <div class="badge-card">
-              <div class="badge-icon">🐳</div>
-              <h4>Docker Pro</h4>
-              <p>Maîtrise de la conteneurisation</p>
-              <span class="badge-status obtained">2 attribués</span>
-            </div>
-            <div class="badge-card">
-              <div class="badge-icon">🔧</div>
-              <h4>Git Guru</h4>
-              <p>Expert en gestion de versions</p>
-              <span class="badge-status obtained">4 attribués</span>
-            </div>
-            <div class="badge-card">
-              <div class="badge-icon">🤝</div>
-              <h4>Team Player</h4>
-              <p>Esprit d'équipe exceptionnel</p>
-              <span class="badge-status obtained">9 attribués</span>
-            </div>
-            <div class="badge-card">
-              <div class="badge-icon">☕</div>
-              <h4>Code Ninja</h4>
-              <p>Code propre et bien structuré</p>
-              <span class="badge-status obtained">1 attribué</span>
-            </div>
-          </div>
+            <section class="competences-section assign-section">
+                <h3>Attribuer un Badge</h3>
+                <form method="POST" class="assign-form">
+                    <div class="assign-row">
+                        <div class="assign-field">
+                            <label>Stagiaire</label>
+                            <select name="id_user" class="filter-select" required>
+                                <option value="">Sélectionner un stagiaire...</option>
+                                <?php foreach ($students as $s): ?>
+                                <option value="<?= $s['id_user'] ?>"><?= htmlspecialchars($s['prenom'] . ' ' . $s['nom']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="assign-field">
+                            <label>Badge</label>
+                            <select name="id_badge" class="filter-select" required>
+                                <option value="">Sélectionner un badge...</option>
+                                <?php foreach ($badges as $b): ?>
+                                <option value="<?= $b['id_badge'] ?>"><?= htmlspecialchars($b['nom']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="assign-field assign-btn-wrap">
+                            <label>&nbsp;</label>
+                            <button type="submit" name="assign_badge" class="btn-assign"><i class="fas fa-gift"></i> Attribuer</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <section class="competences-section">
+                <h3>Attributions Récentes</h3>
+                <table class="validations-table">
+                    <thead>
+                        <tr>
+                            <th>Stagiaire</th>
+                            <th>Badge</th>
+                            <th>Date</th>
+                            <th>Attribué par</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($attributions)): ?>
+                        <tr><td colspan="5">Aucune attribution.</td></tr>
+                        <?php endif; ?>
+                        <?php foreach ($attributions as $a): ?>
+                        <tr>
+                            <td><strong><?= htmlspecialchars($a['user_prenom'] . ' ' . $a['user_nom']) ?></strong></td>
+                            <td><span class="badge-tag"><?= htmlspecialchars($a['image'] ?? '🏅') ?> <?= htmlspecialchars($a['badge_nom']) ?></span></td>
+                            <td><?= date('d/m/Y', strtotime($a['date_obtention'])) ?></td>
+                            <td>Vous</td>
+                            <td>
+                                <form method="POST" onsubmit="return confirm('Confirmer le retrait de ce badge ?')">
+                                    <input type="hidden" name="id_user" value="<?= $a['id_user'] ?>">
+                                    <input type="hidden" name="id_badge" value="<?= $a['id_badge'] ?>">
+                                    <button type="submit" name="retirer_badge" class="btn-assign" style="background:#dc2625">Retirer</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="competences-section" style="margin-top:30px;">
+                <h3>Badges par Stagiaire</h3>
+                <?php
+                $stmt_s = $db->prepare("SELECT u.id_user, u.nom, u.prenom, u.filiere FROM utilisateurs u WHERE u.role = 'stagiaire' ORDER BY u.nom, u.prenom");
+                $stmt_s->execute();
+                $stagiaires = $stmt_s->fetchAll();
+                ?>
+                <?php if (empty($stagiaires)): ?>
+                <p>Aucun stagiaire inscrit.</p>
+                <?php else: ?>
+                <div class="badges-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr));">
+                <?php foreach ($stagiaires as $s):
+                    $stmt_b = $db->prepare("SELECT b.nom, b.image, ob.date_obtention FROM obtention_badges ob JOIN badges b ON ob.id_badge = b.id_badge WHERE ob.id_user = ? ORDER BY ob.date_obtention DESC");
+                    $stmt_b->execute([$s['id_user']]);
+                    $stagiaire_badges = $stmt_b->fetchAll();
+                    $s_init = strtoupper(substr($s['prenom'],0,1).substr($s['nom'],0,1));
+                ?>
+                    <div class="market-card" style="padding:16px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                            <span class="avatar-sm"><?= htmlspecialchars($s_init) ?></span>
+                            <div>
+                                <strong><?= htmlspecialchars($s['prenom'] . ' ' . $s['nom']) ?></strong>
+                                <small style="display:block;color:#64748b;"><?= htmlspecialchars($s['filiere'] ?? 'Non spécifié') ?></small>
+                            </div>
+                        </div>
+                        <?php if (empty($stagiaire_badges)): ?>
+                        <p style="color:#94a3b8;font-size:13px;">Aucun badge</p>
+                        <?php else: ?>
+                        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                            <?php foreach ($stagiaire_badges as $b): ?>
+                            <span class="badge-tag" style="background:#f0fdf4;color:#166534;padding:4px 10px;border-radius:20px;font-size:12px;">
+                                <?= htmlspecialchars($b['image'] ?? '🏅') ?> <?= htmlspecialchars($b['nom']) ?>
+                            </span>
+                            <?php endforeach; ?>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+            </section>
         </section>
-
-        <section class="competences-section assign-section">
-          <h3>Attribuer un Badge</h3>
-          <div class="assign-form">
-            <div class="assign-row">
-              <div class="assign-field">
-                <label>Stagiaire</label>
-                <select class="filter-select">
-                  <option>Sélectionner un stagiaire...</option>
-                  <option>Sarah Chen</option>
-                  <option>Mike Johnson</option>
-                  <option>Emma Davis</option>
-                  <option>Alex Kumar</option>
-                  <option>Lisa Wang</option>
-                  <option>Omar Hassan</option>
-                  <option>Yuki Tanaka</option>
-                  <option>Maria Garcia</option>
-                </select>
-              </div>
-              <div class="assign-field">
-                <label>Badge</label>
-                <select class="filter-select">
-                  <option>Sélectionner un badge...</option>
-                  <option>⭐ Premier Aide</option>
-                  <option>⚡ Réponse Rapide</option>
-                  <option>⚛️ Expert React</option>
-                  <option>🐍 Python Master</option>
-                  <option>💾 SQL Wizard</option>
-                  <option>🐳 Docker Pro</option>
-                  <option>🔧 Git Guru</option>
-                  <option>🤝 Team Player</option>
-                  <option>☕ Code Ninja</option>
-                </select>
-              </div>
-              <div class="assign-field">
-                <label>Date</label>
-                <input type="date" class="filter-input" value="2024-05-24">
-              </div>
-              <div class="assign-field assign-btn-wrap">
-                <label>&nbsp;</label>
-                <button class="btn-assign"><i class="fas fa-gift"></i> Attribuer</button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="competences-section">
-          <h3>Attributions Récentes</h3>
-          <table class="validations-table">
-            <thead>
-              <tr>
-                <th>Stagiaire</th>
-                <th>Badge</th>
-                <th>Date</th>
-                <th>Attribué par</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Sarah Chen</strong></td>
-                <td><span class="badge-tag">🐍 Python Master</span></td>
-                <td>22/05/2024</td>
-                <td>Marc Formateur</td>
-              </tr>
-              <tr>
-                <td><strong>Mike Johnson</strong></td>
-                <td><span class="badge-tag">⚛️ Expert React</span></td>
-                <td>21/05/2024</td>
-                <td>Marc Formateur</td>
-              </tr>
-              <tr>
-                <td><strong>Emma Davis</strong></td>
-                <td><span class="badge-tag">🤝 Team Player</span></td>
-                <td>20/05/2024</td>
-                <td>Marc Formateur</td>
-              </tr>
-              <tr>
-                <td><strong>Alex Kumar</strong></td>
-                <td><span class="badge-tag">⭐ Premier Aide</span></td>
-                <td>19/05/2024</td>
-                <td>Marc Formateur</td>
-              </tr>
-              <tr>
-                <td><strong>Lisa Wang</strong></td>
-                <td><span class="badge-tag">🔧 Git Guru</span></td>
-                <td>18/05/2024</td>
-                <td>Marc Formateur</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-      </section>
     </main>
-  </div>
-  <script>
-    const profileToggle = document.getElementById('profileToggle');
-    const profileMenu   = document.getElementById('profileMenu');
-    const chevronIcon   = document.getElementById('chevronIcon');
-    profileToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      profileMenu.classList.toggle('open');
-      chevronIcon.classList.toggle('rotated');
-    });
-    document.addEventListener('click', (e) => {
-      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-        profileMenu.classList.remove('open');
-        chevronIcon.classList.remove('rotated');
-      }
-    });
-  </script>
+</div>
+<script src="/phpprojet/js/profile-menu.js"></script>
+<script src="/phpprojet/js/search.js"></script>
 </body>
 </html>

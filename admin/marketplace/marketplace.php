@@ -1,291 +1,185 @@
-<!doctype html>
+<?php
+session_start();
+if (!isset($_SESSION['id_user'])) {
+    header('Location: /phpprojet/login/index.php');
+    exit;
+}
+extract($_SESSION);
+if ($role !== 'admin') {
+    header('Location: /phpprojet/login/index.php');
+    exit;
+}
+$init = strtoupper(substr($prenom, 0, 1) . substr($nom, 0, 1));
+$current_url = $_SERVER["PHP_SELF"];
+
+require_once __DIR__ . '/../../dbopen/db.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_demande'])) {
+    extract($_POST);
+    $id_demande = (int)$delete_demande;
+    $stmt = $db->prepare("DELETE FROM propositions_aide WHERE id_demande = ?");
+    $stmt->execute([$id_demande]);
+    $stmt = $db->prepare("DELETE FROM demandes_aide WHERE id_demande = ?");
+    $stmt->execute([$id_demande]);
+    header('Location: marketplace.php');
+    exit;
+}
+
+$search = $_GET['search'] ?? '';
+$sql = "
+    SELECT d.*, u.nom, u.prenom
+    FROM demandes_aide d
+    JOIN utilisateurs u ON d.id_user = u.id_user
+";
+$params = [];
+if (!empty($search)) {
+    $sql .= " WHERE (d.titre LIKE ? OR u.nom LIKE ? OR u.prenom LIKE ?)";
+    $params = ["%$search%", "%$search%", "%$search%"];
+}
+$sql .= " ORDER BY d.date_pub DESC";
+$stmt = $db->prepare($sql);
+$stmt->execute($params);
+$demandes = $stmt->fetchAll();
+?>
+<!DOCTYPE html>
 <html lang="fr">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ISMO-SkillSwap - Marketplace</title>
-  <link rel="stylesheet" href="../../css/styles.css">
-  <link rel="stylesheet" href="marketplace.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISMO-SkillSwap - Marketplace</title>
+    <link rel="stylesheet" href="/phpprojet/css/styles.css">
+    <link rel="stylesheet" href="marketplace.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-  <div class="container">
-    <!-- Sidebar -->
-                <aside class="sidebar sidebar-admin">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">
-          <i class="fas fa-graduation-cap"></i>
+<div class="container">
+    <aside class="sidebar sidebar-admin">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><i class="fas fa-graduation-cap"></i></div>
+            <div>
+                <h1>ISMO-SkillSwap</h1>
+                <p>ISMO Tétouan</p>
+            </div>
         </div>
-        <div>
-          <h1>ISMO-SkillSwap</h1>
-          <p>ISMO Tétouan</p>
+        <nav class="sidebar-nav">
+            <a href="/phpprojet/admin/accueil/accueil.php" class="nav-item<?= strpos($current_url,'accueil')!==false?' active':'' ?>"><i class="fas fa-home"></i><span>Accueil</span></a>
+            <a href="/phpprojet/admin/marketplace/marketplace.php" class="nav-item<?= strpos($current_url,'marketplace')!==false&&strpos($current_url,'historique')===false?' active':'' ?>"><i class="fas fa-store"></i><span>Marketplace</span></a>
+            <a href="/phpprojet/admin/marketplace/historique.php" class="nav-item<?= strpos($current_url,'historique')!==false?' active':'' ?>"><i class="fas fa-clock-rotate"></i><span>Historique</span></a>
+            <a href="/phpprojet/admin/competences/competences.php" class="nav-item<?= strpos($current_url,'admin/competences')!==false?' active':'' ?>"><i class="fas fa-code"></i><span>Compétences</span></a>
+            <a href="/phpprojet/admin/utilisateurs/utilisateurs.php" class="nav-item<?= strpos($current_url,'utilisateurs')!==false?' active':'' ?>"><i class="fas fa-users"></i><span>Utilisateurs</span></a>
+            <a href="/phpprojet/admin/passport/passport.php" class="nav-item<?= strpos($current_url,'passport')!==false?' active':'' ?>"><i class="fas fa-shield"></i><span>Modération</span></a>
+            <a href="/phpprojet/admin/badge/badges.php" class="nav-item<?= strpos($current_url,'badge')!==false?' active':'' ?>"><i class="fas fa-medal"></i><span>Badges</span></a>
+            <a href="/phpprojet/admin/validation/validations.php" class="nav-item<?= strpos($current_url,'validation')!==false?' active':'' ?>"><i class="fas fa-check-circle"></i><span>Validations</span></a>
+            <a href="/phpprojet/admin/classement/classement.php" class="nav-item<?= strpos($current_url,'classement')!==false?' active':'' ?>"><i class="fas fa-ranking-star"></i><span>Classement</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="avatar"><?= $init ?></div>
+                <div>
+                    <p class="user-name"><?= htmlspecialchars("$prenom $nom") ?></p>
+                    <p class="user-role"><?= ucfirst($role) ?></p>
+                </div>
+            </div>
         </div>
-      </div>
-      <nav class="sidebar-nav">
-        <a href="../accueil/accueil.php" class="nav-item">
-          <i class="fas fa-home"></i>
-          <span>Accueil</span>
-        </a>
-        <a href="../marketplace/marketplace.php" class="nav-item active">
-          <i class="fas fa-store"></i>
-          <span>Marketplace</span>
-        </a>
-        <a href="../profile/profile.php" class="nav-item">
-          <i class="fas fa-user"></i>
-          <span>Profil</span>
-        </a>
-        <a href="../passport/passport.php" class="nav-item">
-          <i class="fas fa-shield"></i>
-          <span>Modération</span>
-        </a>
-        <a href="../classement/classement.php" class="nav-item">
-          <i class="fas fa-ranking-star"></i>
-          <span>Classement</span>
-        </a>
-        <a href="../validation/validations.php" class="nav-item">
-          <i class="fas fa-check-circle"></i>
-          <span>Validations</span>
-        </a>
-        <a href="../badge/badges.php" class="nav-item">
-          <i class="fas fa-trophy"></i>
-          <span>Badges</span>
-        </a>
-        <a href="../parametre/parametres.php" class="nav-item">
-          <i class="fas fa-cog"></i>
-          <span>Paramètres</span>
-        </a>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="user-info">
-          <div class="avatar">MA</div>
-          <div>
-            <p class="user-name">Mohammed Admin</p>
-            <p class="user-role">Admin</p>
-          </div>
-        </div>
-      </div>
     </aside>
-
-        <header class="top-header">
-      <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Rechercher...">
-      </div>
-      <div class="header-actions">
-        <button class="notification-btn">
-          <i class="fas fa-bell"></i>
-          <span class="notification-badge">3</span>
-        </button>
-        <div class="user-menu" id="profileToggle">
-          <div class="avatar-large">MA</div>
-          <div>
-            <p class="user-name">Mohammed Admin</p>
-            <p class="user-role">Admin</p>
-          </div>
-          <i class="fas fa-chevron-down" id="chevronIcon"></i>
+    <header class="top-header">
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher..." id="globalSearch">
         </div>
-      </div>
-
-      <!-- Profile Dropdown -->
-      <div class="profile-dropdown" id="profileMenu">
-        <div class="dropdown-header">
-          <div class="dropdown-avatar">MA</div>
-          <div class="dropdown-user-info">
-            <h4>Mohammed Admin</h4>
-            <p>Platform Admin</p>
-            <span class="role-badge role-badge-admin">Admin</span>
-          </div>
+        <div class="header-actions">
+            <button class="notification-btn"><i class="fas fa-bell"></i><span class="notification-badge">0</span></button>
+            <div class="user-menu" id="profileToggle">
+                <div class="avatar-large"><?= $init ?></div>
+                <div>
+                    <p class="user-name"><?= htmlspecialchars("$prenom $nom") ?></p>
+                    <p class="user-role"><?= ucfirst($role) ?></p>
+                </div>
+                <i class="fas fa-chevron-down" id="chevronIcon"></i>
+            </div>
         </div>
-        <div class="dropdown-meta">
-          <div class="meta-item"><i class="fas fa-envelope"></i> admin@ismo.com</div>
-          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 1/1/2022</div>
-          <div class="meta-item"><i class="fas fa-chart-line"></i> 8,500 Reputation Points</div>
-          <div class="meta-item"><i class="fas fa-medal"></i> 60 Skills Validated</div>
+        <div class="profile-dropdown" id="profileMenu">
+            <div class="dropdown-header">
+                <div class="dropdown-avatar"><?= $init ?></div>
+                <div class="dropdown-user-info">
+                    <h4><?= htmlspecialchars("$prenom $nom") ?></h4>
+                    <p><?= $filiere ? "Filière $filiere" : "Platform ".ucfirst($role) ?></p>
+                    <span class="role-badge role-badge-admin"><?= ucfirst($role) ?></span>
+                </div>
+            </div>
+            <div class="dropdown-meta">
+                <div class="meta-item"><i class="fas fa-envelope"></i> <?= htmlspecialchars($email) ?></div>
+                <div class="meta-item"><i class="fas fa-calendar"></i> Membre depuis <?= date("d/m/Y",strtotime($date_inscription)) ?></div>
+            </div>
+            <div class="dropdown-actions">
+                <a href="/phpprojet/admin/profile/profile.php" class="dropdown-action"><i class="fas fa-user"></i> Voir le profil</a>
+            </div>
+            <div class="dropdown-signout">
+                <a href="/phpprojet/login/deconnexion.php" class="dropdown-action signout"><i class="fas fa-right-from-bracket"></i> Déconnexion</a>
+            </div>
         </div>
-        <div class="dropdown-actions">
-          <a href="../passport/passport.php" class="dropdown-action">
-            <i class="fas fa-shield"></i> Modération
-          </a>
-          <a href="../profile/profile.php" class="dropdown-action">
-            <i class="fas fa-user"></i> View Profile
-          </a>
-          <a href="../parametre/parametres.php" class="dropdown-action">
-            <i class="fas fa-gear"></i> Settings
-          </a>
-        </div>
-        <div class="dropdown-signout">
-          <a href="../../login/index.php" class="dropdown-action signout">
-            <i class="fas fa-right-from-bracket"></i> Sign Out
-          </a>
-        </div>
-      </div>
     </header>
-
     <main class="main-content">
-      <div class="topbar-actions">
-        <div class="topbar-left">
-          <h1 class="section-title">Marketplace</h1>
-          
+        <h1 class="section-title">Marketplace</h1>
+
+        <div class="search-row">
+            <form method="GET" style="display:flex;gap:10px;width:100%;">
+                <div class="search-large">
+                    <span>🔍</span>
+                    <input type="text" name="search" placeholder="Rechercher par titre ou auteur..." value="<?= htmlspecialchars($search) ?>">
+                </div>
+                <button type="submit" class="btn primary">Rechercher</button>
+            </form>
         </div>
-        
-        <div class="profile-menu-wrap">
-          <div class="profile-menu" id="profileMenu">
-            <div class="profile-header">
-              <div class="profile-avatar large">JS</div>
-              <div>
-                <strong>John Student</strong>
-                <p>Computer Science Student</p>
-                <span class="badge">Stagiaire</span>
-              </div>
-            </div>
-            <div class="profile-actions">
-              <button class="profile-action">Modération</button>
-              <button class="profile-action secondary">View Profile</button>
-              <button class="profile-action secondary">Settings</button>
-            </div>
-            <button class="signout">Sign Out</button>
-          </div>
+
+        <div class="market-grid">
+            <?php if (empty($demandes)): ?>
+            <p>Aucune demande trouvée.</p>
+            <?php endif; ?>
+            <?php foreach ($demandes as $d): ?>
+            <?php
+            $status_class = match ($d['status']) {
+                'ouvert' => 'open',
+                'en_cours' => 'in-progress',
+                'resolu', 'termine' => 'resolved',
+                default => 'open'
+            };
+            $status_label = match ($d['status']) {
+                'ouvert' => 'Ouvert',
+                'en_cours' => 'En cours',
+                'resolu' => 'Résolu',
+                'termine' => 'Terminé',
+                default => ucfirst($d['status'])
+            };
+            $init_author = strtoupper(substr($d['nom'],0,1).substr($d['prenom'],0,1));
+            ?>
+            <article class="market-card">
+                <div class="card-head">
+                    <div>
+                        <p class="status-pill <?= $status_class ?>"><?= $status_label ?></p>
+                        <h2><?= htmlspecialchars($d['titre']) ?></h2>
+                    </div>
+                    <form method="POST" onsubmit="return confirm('Supprimer cette demande ?')">
+                        <input type="hidden" name="delete_demande" value="<?= $d['id_demande'] ?>">
+                        <button type="submit" class="btn-report" title="Supprimer"><i class="fas fa-trash-can"></i></button>
+                    </form>
+                </div>
+                <p class="card-copy"><?= htmlspecialchars(mb_substr($d['description'], 0, 200)) ?></p>
+                <div class="card-footer">
+                    <div class="author">
+                        <span class="avatar-sm"><?= $init_author ?></span>
+                        <div>
+                            <strong><?= htmlspecialchars($d['prenom'] . ' ' . $d['nom']) ?></strong>
+                            <small><?= date('d/m/Y', strtotime($d['date_pub'])) ?></small>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <?php endforeach; ?>
         </div>
-      </div>
-
-      <div class="search-row">
-        <div class="search-large">
-          <span>🔍</span>
-          <input type="text" placeholder="Rechercher par titre ou technologie...">
-        </div>
-        <div class="filter-select">
-          <select>
-            <option>Tous</option>
-            <option>React</option>
-            <option>SQL</option>
-            <option>CSS</option>
-            <option>Git</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="market-grid">
-        <article class="market-card" data-author="SC">
-          <div class="card-head">
-            <div>
-              <p class="status-pill open">Ouvert</p>
-              <h2>Bug React - useState ne se met pas à jour</h2>
-            </div>
-            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
-          </div>
-          <p class="card-copy">J'ai un problème avec useState qui ne se met pas à jour correctement dans mon composant.
-          </p>
-          <div class="tag-list">
-            <span class="tag">React</span>
-            <span class="tag">Dev Web & Mobile</span>
-          </div>
-          <div class="card-footer">
-            <div class="author">
-              <span class="avatar-sm">SC</span>
-              <div>
-                <strong>Sarah Chen</strong>
-                <small>14/05/2024</small>
-              </div>
-            </div>
-                      </div>
-        </article>
-
-        <article class="market-card" data-author="MJ">
-          <div class="card-head">
-            <div>
-              <p class="status-pill in-progress">En cours</p>
-              <h2>Optimisation requête SQL complexe</h2>
-            </div>
-            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
-          </div>
-          <p class="card-copy">Besoin d'aide pour optimiser une requête avec plusieurs JOIN qui est très lente.</p>
-          <div class="tag-list">
-            <span class="tag">SQL</span>
-            <span class="tag">Data Engineering</span>
-          </div>
-          <div class="card-footer">
-            <div class="author">
-              <span class="avatar-sm">MJ</span>
-              <div>
-                <strong>Mike Johnson</strong>
-                <small>13/05/2024</small>
-              </div>
-            </div>
-                      </div>
-        </article>
-
-        <article class="market-card" data-author="GM">
-          <div class="card-head">
-            <div>
-              <p class="status-pill resolved">Résolu</p>
-              <h2>Résolution conflit Git merge</h2>
-            </div>
-            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
-          </div>
-          <p class="card-copy">Premier conflit de merge, besoin de conseils pour le résoudre proprement.</p>
-          <div class="tag-list">
-            <span class="tag">Git</span>
-            <span class="tag">Dev Digital</span>
-          </div>
-          <div class="card-footer">
-            <div class="author">
-              <span class="avatar-sm">GM</span>
-              <div>
-                <strong>Gina Martin</strong>
-                <small>12/05/2024</small>
-              </div>
-            </div>
-                      </div>
-        </article>
-
-        <article class="market-card" data-author="AL">
-          <div class="card-head">
-            <div>
-              <p class="status-pill open">Ouvert</p>
-              <h2>Problème d'alignement CSS Grid</h2>
-            </div>
-            <button class="btn-report" title="Signaler"><i class="fas fa-exclamation-triangle"></i></button>
-          </div>
-          <p class="card-copy">Les éléments de ma grille ne s'alignent pas correctement sur mobile.</p>
-          <div class="tag-list">
-            <span class="tag">CSS</span>
-            <span class="tag">Dev Web & Mobile</span>
-          </div>
-          <div class="card-footer">
-            <div class="author">
-              <span class="avatar-sm">AL</span>
-              <div>
-                <strong>Alice Lopez</strong>
-                <small>11/05/2024</small>
-              </div>
-            </div>
-                      </div>
-        </article>
-      </div>
     </main>
-  </div>
-
-  <script>
-    const profileToggle = document.getElementById('profileToggle');
-    const profileMenu   = document.getElementById('profileMenu');
-    const chevronIcon   = document.getElementById('chevronIcon');
-    profileToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      profileMenu.classList.toggle('open');
-      chevronIcon.classList.toggle('rotated');
-    });
-    document.addEventListener('click', (e) => {
-      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-        profileMenu.classList.remove('open');
-        chevronIcon.classList.remove('rotated');
-      }
-    });
-  </script>
-  <script>window.currentUser = { initials: 'MA', name: 'Mohammed Admin', role: 'admin' };</script>
-  <script src="../../js/marketplace.js"></script>
+</div>
+<script src="/phpprojet/js/profile-menu.js"></script>
+<script src="/phpprojet/js/search.js"></script>
 </body>
-
 </html>

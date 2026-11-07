@@ -250,6 +250,13 @@ select {
   font-weight: 600
 }
 
+.field-error {
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 6px;
+  font-weight: 500
+}
+
 .login {
   text-align: center;
   margin-top: 14px;

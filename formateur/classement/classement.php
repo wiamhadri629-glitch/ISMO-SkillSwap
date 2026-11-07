@@ -1,324 +1,216 @@
-<!doctype html>
+<?php
+session_start();
+if (!isset($_SESSION['id_user'])) {
+    header('Location: /phpprojet/login/index.php');
+    exit;
+}
+extract($_SESSION);
+if ($role !== 'formateur') {
+    header('Location: /phpprojet/login/index.php');
+    exit;
+}
+$init = strtoupper(substr($prenom, 0, 1) . substr($nom, 0, 1));
+$current_url = $_SERVER["PHP_SELF"];
+
+require_once __DIR__ . '/../../dbopen/db.php';
+
+$filiere_filter = $_GET['filiere'] ?? '';
+
+$sql = "
+    SELECT u.id_user, u.nom, u.prenom, u.score, u.filiere
+    FROM utilisateurs u
+    WHERE u.role IN ('stagiaire', 'mentor')
+";
+$params = [];
+if (!empty($filiere_filter)) {
+    $sql .= " AND u.filiere = ?";
+    $params[] = $filiere_filter;
+}
+$sql .= " ORDER BY u.score DESC LIMIT 50";
+$stmt = $db->prepare($sql);
+$stmt->execute($params);
+$users = $stmt->fetchAll();
+
+$badge_stmt = $db->query("SELECT id_user, COUNT(*) FROM obtention_badges GROUP BY id_user");
+$badge_counts = $badge_stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+$help_stmt = $db->query("SELECT id_mentor, COUNT(*) FROM aide_effectuee GROUP BY id_mentor");
+$help_counts = $help_stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+foreach ($users as &$u) {
+    $u['badges_count'] = isset($badge_counts[$u['id_user']]) ? (int)$badge_counts[$u['id_user']] : 0;
+    $u['helps_count'] = isset($help_counts[$u['id_user']]) ? (int)$help_counts[$u['id_user']] : 0;
+}
+unset($u);
+
+$stmt = $db->prepare("SELECT DISTINCT filiere FROM utilisateurs WHERE filiere IS NOT NULL AND filiere != '' ORDER BY filiere");
+$stmt->execute();
+$filieres = $stmt->fetchAll();
+
+$current_user_id = $id_user;
+$current_rank = 0;
+$current_score = 0;
+foreach ($users as $i => $u) {
+    if ($u['id_user'] == $current_user_id) {
+        $current_rank = $i + 1;
+        $current_score = (int)$u['score'];
+        break;
+    }
+}
+?>
+<!DOCTYPE html>
 <html lang="fr">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ISMO-SkillSwap - Classement</title>
-  <link rel="stylesheet" href="../../css/styles.css">
-  <link rel="stylesheet" href="classement.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISMO-SkillSwap - Classement</title>
+    <link rel="stylesheet" href="/phpprojet/css/styles.css">
+    <link rel="stylesheet" href="classement.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-  <div class="container">
-                <aside class="sidebar sidebar-formateur">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">
-          <i class="fas fa-graduation-cap"></i>
+<div class="container">
+    <aside class="sidebar sidebar-formateur">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><i class="fas fa-graduation-cap"></i></div>
+            <div>
+                <h1>ISMO-SkillSwap</h1>
+                <p>ISMO Tétouan</p>
+            </div>
         </div>
-        <div>
-          <h1>ISMO-SkillSwap</h1>
-          <p>ISMO Tétouan</p>
+        <nav class="sidebar-nav">
+            <a href="/phpprojet/formateur/accueil/accueil.php" class="nav-item<?= strpos($current_url,'accueil')!==false?' active':'' ?>"><i class="fas fa-home"></i><span>Accueil</span></a>
+            <a href="/phpprojet/formateur/marketplace/marketplace.php" class="nav-item<?= strpos($current_url,'marketplace')!==false?' active':'' ?>"><i class="fas fa-store"></i><span>Marketplace</span></a>
+            <a href="/phpprojet/formateur/profile/profile.php" class="nav-item<?= strpos($current_url,'profile')!==false?' active':'' ?>"><i class="fas fa-user"></i><span>Profil</span></a>
+            <a href="/phpprojet/formateur/passport/passport.php" class="nav-item<?= strpos($current_url,'passport')!==false?' active':'' ?>"><i class="fas fa-passport"></i><span>Passport</span></a>
+            <a href="/phpprojet/formateur/validation/validations.php" class="nav-item<?= strpos($current_url,'validation')!==false?' active':'' ?>"><i class="fas fa-check-circle"></i><span>Validations</span></a>
+            <a href="/phpprojet/formateur/badge/badges.php" class="nav-item<?= strpos($current_url,'badge')!==false?' active':'' ?>"><i class="fas fa-medal"></i><span>Badges</span></a>
+            <a href="/phpprojet/formateur/classement/classement.php" class="nav-item<?= strpos($current_url,'classement')!==false?' active':'' ?>"><i class="fas fa-ranking-star"></i><span>Classement</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="avatar"><?= $init ?></div>
+                <div>
+                    <p class="user-name"><?= htmlspecialchars("$prenom $nom") ?></p>
+                    <p class="user-role"><?= ucfirst($role) ?></p>
+                </div>
+            </div>
         </div>
-      </div>
-      <nav class="sidebar-nav">
-        <a href="../accueil/accueil.php" class="nav-item">
-          <i class="fas fa-home"></i>
-          <span>Accueil</span>
-        </a>
-        <a href="../marketplace/marketplace.php" class="nav-item">
-          <i class="fas fa-store"></i>
-          <span>Marketplace</span>
-        </a>
-        <a href="../profile/profile.php" class="nav-item">
-          <i class="fas fa-user"></i>
-          <span>Profil</span>
-        </a>
-        <a href="../passport/passport.php" class="nav-item">
-          <i class="fas fa-passport"></i>
-          <span>Passport</span>
-        </a>
-        <a href="../classement/classement.php" class="nav-item active">
-          <i class="fas fa-ranking-star"></i>
-          <span>Classement</span>
-        </a>
-        <a href="../validation/validations.php" class="nav-item">
-          <i class="fas fa-check-circle"></i>
-          <span>Validations</span>
-        </a>
-        <a href="../badge/badges.php" class="nav-item">
-          <i class="fas fa-trophy"></i>
-          <span>Badges</span>
-        </a>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="user-info">
-          <div class="avatar">MF</div>
-          <div>
-            <p class="user-name">Marc Formateur</p>
-            <p class="user-role">Formateur</p>
-          </div>
-        </div>
-      </div>
     </aside>
-
-        <header class="top-header">
-      <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Rechercher...">
-      </div>
-      <div class="header-actions">
-        <button class="notification-btn">
-          <i class="fas fa-bell"></i>
-          <span class="notification-badge">3</span>
-        </button>
-        <div class="user-menu" id="profileToggle">
-          <div class="avatar-large">MF</div>
-          <div>
-            <p class="user-name">Marc Formateur</p>
-            <p class="user-role">Formateur</p>
-          </div>
-          <i class="fas fa-chevron-down" id="chevronIcon"></i>
+    <header class="top-header">
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher..." id="globalSearch">
         </div>
-      </div>
-
-      <!-- Profile Dropdown -->
-      <div class="profile-dropdown" id="profileMenu">
-        <div class="dropdown-header">
-          <div class="dropdown-avatar">MF</div>
-          <div class="dropdown-user-info">
-            <h4>Marc Formateur</h4>
-            <p>Platform Formateur</p>
-            <span class="role-badge role-badge-formateur">Formateur</span>
-          </div>
+        <div class="header-actions">
+            <button class="notification-btn"><i class="fas fa-bell"></i><span class="notification-badge">0</span></button>
+            <div class="user-menu" id="profileToggle">
+                <div class="avatar-large"><?= $init ?></div>
+                <div>
+                    <p class="user-name"><?= htmlspecialchars("$prenom $nom") ?></p>
+                    <p class="user-role"><?= ucfirst($role) ?></p>
+                </div>
+                <i class="fas fa-chevron-down" id="chevronIcon"></i>
+            </div>
         </div>
-        <div class="dropdown-meta">
-          <div class="meta-item"><i class="fas fa-envelope"></i> formateur@ismo.com</div>
-          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 3/9/2022</div>
-          <div class="meta-item"><i class="fas fa-chart-line"></i> 4,200 Reputation Points</div>
-          <div class="meta-item"><i class="fas fa-medal"></i> 35 Skills Validated</div>
+        <div class="profile-dropdown" id="profileMenu">
+            <div class="dropdown-header">
+                <div class="dropdown-avatar"><?= $init ?></div>
+                <div class="dropdown-user-info">
+                    <h4><?= htmlspecialchars("$prenom $nom") ?></h4>
+                    <p><?= $filiere ? "Filière $filiere" : "Platform ".ucfirst($role) ?></p>
+                    <span class="role-badge role-badge-formateur"><?= ucfirst($role) ?></span>
+                </div>
+            </div>
+            <div class="dropdown-meta">
+                <div class="meta-item"><i class="fas fa-envelope"></i> <?= htmlspecialchars($email) ?></div>
+                <div class="meta-item"><i class="fas fa-calendar"></i> Membre depuis <?= date("d/m/Y",strtotime($date_inscription)) ?></div>
+            </div>
+            <div class="dropdown-actions">
+                <a href="/phpprojet/formateur/passport/passport.php" class="dropdown-action"><i class="fas fa-download"></i> Télécharger le Passeport (PDF)</a>
+                <a href="/phpprojet/formateur/profile/profile.php" class="dropdown-action"><i class="fas fa-user"></i> Voir le profil</a>
+            </div>
+            <div class="dropdown-signout">
+                <a href="/phpprojet/login/deconnexion.php" class="dropdown-action signout"><i class="fas fa-right-from-bracket"></i> Déconnexion</a>
+            </div>
         </div>
-        <div class="dropdown-actions">
-          <a href="../passport/passport.php" class="dropdown-action">
-            <i class="fas fa-download"></i> Download Skills Passport (PDF)
-          </a>
-          <a href="../profile/profile.php" class="dropdown-action">
-            <i class="fas fa-user"></i> View Profile
-          </a>
-          <a href="../profile/profile.php" class="dropdown-action">
-            <i class="fas fa-gear"></i> Settings
-          </a>
-        </div>
-        <div class="dropdown-signout">
-          <a href="../../login/index.php" class="dropdown-action signout">
-            <i class="fas fa-right-from-bracket"></i> Sign Out
-          </a>
-        </div>
-      </div>
     </header>
-
-    <main class="main-content classement-page">
-      <section class="rank-header">
-        <div>
-          <p class="eyebrow">Classement des Mentors</p>
-          <h1>Les meilleurs contributeurs de la communauté ISMO</h1>
-        </div>
-      </section>
-
-      <section class="rank-cards">
-        <article class="rank-card highlight">
-          <div class="rank-card-title">
-            <i class="fas fa-trophy"></i>
+    <main class="main-content">
+        <section class="rank-header">
             <div>
-              <span>Ton Rang</span>
-              <p>Top 5% ce mois</p>
+                <p class="eyebrow">Classement</p>
+                <h1>Les meilleurs contributeurs de la communauté ISMO</h1>
             </div>
-          </div>
-          <strong>#12</strong>
-        </article>
-        <article class="rank-card">
-          <div class="rank-card-title">
-            <i class="fas fa-star"></i>
-            <div>
-              <span>Tes Points</span>
-              <p>+85 cette semaine</p>
-            </div>
-          </div>
-          <strong>1,245</strong>
-        </article>
-        <article class="rank-card">
-          <div class="rank-card-title">
-            <i class="fas fa-chart-line"></i>
-            <div>
-              <span>Progression</span>
-              <p>rangs cette semaine</p>
-            </div>
-          </div>
-          <strong>+3</strong>
-        </article>
-      </section>
+        </section>
 
-      <section class="top-list-section">
-        <div class="list-header">
-          <h2>Top 10 Mentors - Mai 2024</h2>
-          <select>
-            <option>Ce mois</option>
-            <option>Cette semaine</option>
-            <option>Ce trimestre</option>
-          </select>
-        </div>
-        <div class="top-list">
-          <article class="top-list-item">
-            <div class="top-rank">#1</div>
-            <div class="top-avatar">AC</div>
-            <div class="top-info">
-              <strong>Alice Chen</strong>
-              <span>Dev Web & Mobile</span>
-            </div>
-            <div class="top-score">
-              <span>2 450</span>
-              <small>12 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#2</div>
-            <div class="top-avatar">BM</div>
-            <div class="top-info">
-              <strong>Bob Martinez</strong>
-              <span>Data Engineering</span>
-            </div>
-            <div class="top-score">
-              <span>2 180</span>
-              <small>10 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#3</div>
-            <div class="top-avatar">CW</div>
-            <div class="top-info">
-              <strong>Carol Wang</strong>
-              <span>Dev Digital</span>
-            </div>
-            <div class="top-score">
-              <span>1 950</span>
-              <small>9 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#4</div>
-            <div class="top-avatar secondary">DL</div>
-            <div class="top-info">
-              <strong>David Lee</strong>
-              <span>Infrastructure</span>
-            </div>
-            <div class="top-score">
-              <span>1 720</span>
-              <small>8 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#5</div>
-            <div class="top-avatar">EG</div>
-            <div class="top-info">
-              <strong>Eva Garcia</strong>
-              <span>Dev Web & Mobile</span>
-            </div>
-            <div class="top-score">
-              <span>1 580</span>
-              <small>7 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#6</div>
-            <div class="top-avatar">FA</div>
-            <div class="top-info">
-              <strong>Frank Ahmed</strong>
-              <span>Dev Digital</span>
-            </div>
-            <div class="top-score">
-              <span>1 420</span>
-              <small>7 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#7</div>
-            <div class="top-avatar">GK</div>
-            <div class="top-info">
-              <strong>Grace Kim</strong>
-              <span>Data Engineering</span>
-            </div>
-            <div class="top-score">
-              <span>1 250</span>
-              <small>6 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#8</div>
-            <div class="top-avatar">HO</div>
-            <div class="top-info">
-              <strong>Hassan Omar</strong>
-              <span>Infrastructure</span>
-            </div>
-            <div class="top-score">
-              <span>1 180</span>
-              <small>6 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#9</div>
-            <div class="top-avatar">IS</div>
-            <div class="top-info">
-              <strong>Iris Santos</strong>
-              <span>Dev Web & Mobile</span>
-            </div>
-            <div class="top-score">
-              <span>1 050</span>
-              <small>5 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#10</div>
-            <div class="top-avatar">JT</div>
-            <div class="top-info">
-              <strong>Jack Taylor</strong>
-              <span>Dev Digital</span>
-            </div>
-            <div class="top-score">
-              <span>980</span>
-              <small>5 badges</small>
-            </div>
-          </article>
-        </div>
-      </section>
+        <section class="rank-cards">
+            <article class="rank-card highlight">
+                <div class="rank-card-title">
+                    <i class="fas fa-trophy"></i>
+                    <div>
+                        <span>Ton Rang</span>
+                        <p>Classement global</p>
+                    </div>
+                </div>
+                <strong>#<?= $current_rank ?: 'N/A' ?></strong>
+            </article>
+            <article class="rank-card">
+                <div class="rank-card-title">
+                    <i class="fas fa-star"></i>
+                    <div>
+                        <span>Tes Points</span>
+                        <p>Score actuel</p>
+                    </div>
+                </div>
+                <strong><?= number_format($current_score) ?></strong>
+            </article>
+            <article class="rank-card">
+                <div class="rank-card-title">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <span>Total</span>
+                        <p>Participants classés</p>
+                    </div>
+                </div>
+                <strong><?= count($users) ?></strong>
+            </article>
+        </section>
 
-      <section class="rank-banner">
-        <div>
-          <h2>Niveau Actuel: Contributeur Actif</h2>
-          <p>1,245 points</p>
-        </div>
-        <div class="progress-bar">
-          <div class="progress" style="width: 68%"></div>
-        </div>
-      </section>
+        <section class="top-list-section">
+            <div class="list-header">
+                <h2>Classement des utilisateurs</h2>
+                <form method="GET">
+                    <select name="filiere" onchange="this.form.submit()">
+                        <option value="">Toutes les filières</option>
+                        <?php foreach ($filieres as $f): ?>
+                        <option value="<?= htmlspecialchars($f['filiere']) ?>" <?= $filiere_filter === $f['filiere'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($f['filiere']) ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                </form>
+            </div>
+            <div class="top-list">
+                <?php if (empty($users)): ?>
+                <p>Aucun utilisateur trouvé.</p>
+                <?php endif; ?>
+                <?php foreach ($users as $i => $u): ?>
+                <article class="top-list-item">
+                    <div class="top-rank">#<?= $i + 1 ?></div>
+                    <div class="top-avatar"><?= strtoupper(substr($u['nom'],0,1).substr($u['prenom'],0,1)) ?></div>
+                    <div class="top-info">
+                        <strong><?= htmlspecialchars($u['prenom'] . ' ' . $u['nom']) ?></strong>
+                        <span><?= htmlspecialchars($u['filiere'] ?? 'Non spécifié') ?></span>
+                    </div>
+                    <div class="top-score">
+                        <span><?= number_format((int)$u['score']) ?></span>
+                        <small><?= $u['badges_count'] ?> badges</small>
+                    </div>
+                </article>
+                <?php endforeach; ?>
+            </div>
+        </section>
     </main>
-  </div>
-  <script>
-    const profileToggle = document.getElementById('profileToggle');
-    const profileMenu   = document.getElementById('profileMenu');
-    const chevronIcon   = document.getElementById('chevronIcon');
-    profileToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      profileMenu.classList.toggle('open');
-      chevronIcon.classList.toggle('rotated');
-    });
-    document.addEventListener('click', (e) => {
-      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-        profileMenu.classList.remove('open');
-        chevronIcon.classList.remove('rotated');
-      }
-    });
-  </script>
+</div>
+<script src="/phpprojet/js/profile-menu.js"></script>
+<script src="/phpprojet/js/search.js"></script>
 </body>
-
 </html>

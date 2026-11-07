@@ -1,316 +1,141 @@
-<!doctype html>
-<html lang="fr">
+<?php
+$page_title = 'Classement';
+$page_css = 'classement.css';
+require_once __DIR__ . '/../../includes/header.php';
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ISMO-SkillSwap - Classement</title>
-  <link rel="stylesheet" href="../../css/styles.css">
-  <link rel="stylesheet" href="classement.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+$id_user = $_SESSION['id_user'];
 
-<body>
-  <div class="container">
-                <aside class="sidebar sidebar-stagiaire">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">
-          <i class="fas fa-graduation-cap"></i>
-        </div>
-        <div>
-          <h1>ISMO-SkillSwap</h1>
-          <p>ISMO Tétouan</p>
-        </div>
-      </div>
-      <nav class="sidebar-nav">
-        <a href="../accueil/accueil.php" class="nav-item">
-          <i class="fas fa-home"></i>
-          <span>Accueil</span>
-        </a>
-        <a href="../marketplace/marketplace.php" class="nav-item">
-          <i class="fas fa-store"></i>
-          <span>Marketplace</span>
-        </a>
-        <a href="../profile/profile.php" class="nav-item">
-          <i class="fas fa-user"></i>
-          <span>Profil</span>
-        </a>
-        <a href="../passport/passport.php" class="nav-item">
-          <i class="fas fa-passport"></i>
-          <span>Passport</span>
-        </a>
-        <a href="../classement/classement.php" class="nav-item active">
-          <i class="fas fa-ranking-star"></i>
-          <span>Classement</span>
-        </a>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="user-info">
-          <div class="avatar">JS</div>
-          <div>
-            <p class="user-name">John Student</p>
-            <p class="user-role">Stagiaire</p>
-          </div>
-        </div>
-      </div>
-    </aside>
+$filiere_filter = $_GET['filiere'] ?? '';
 
-        <header class="top-header">
-      <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Rechercher...">
-      </div>
-      <div class="header-actions">
-        <button class="notification-btn">
-          <i class="fas fa-bell"></i>
-          <span class="notification-badge">3</span>
-        </button>
-        <div class="user-menu" id="profileToggle">
-          <div class="avatar-large">JS</div>
-          <div>
-            <p class="user-name">John Student</p>
-            <p class="user-role">Stagiaire</p>
-          </div>
-          <i class="fas fa-chevron-down" id="chevronIcon"></i>
-        </div>
-      </div>
+$sql = "
+    SELECT u.id_user, u.nom, u.prenom, u.filiere, u.score
+    FROM utilisateurs u
+    WHERE u.valide = 1
+";
+$params = [];
+if (!empty($filiere_filter)) {
+    $sql .= " AND u.filiere = ?";
+    $params[] = $filiere_filter;
+}
+$sql .= " ORDER BY u.score DESC LIMIT 50";
+$stmt = $db->prepare($sql);
+$stmt->execute($params);
+$users = $stmt->fetchAll();
 
-      <!-- Profile Dropdown -->
-      <div class="profile-dropdown" id="profileMenu">
-        <div class="dropdown-header">
-          <div class="dropdown-avatar">JS</div>
-          <div class="dropdown-user-info">
-            <h4>John Student</h4>
-            <p>Platform Stagiaire</p>
-            <span class="role-badge role-badge-stagiaire">Stagiaire</span>
-          </div>
-        </div>
-        <div class="dropdown-meta">
-          <div class="meta-item"><i class="fas fa-envelope"></i> student@ismo.com</div>
-          <div class="meta-item"><i class="fas fa-calendar"></i> Joined 9/2/2023</div>
-          <div class="meta-item"><i class="fas fa-chart-line"></i> 1,245 Reputation Points</div>
-          <div class="meta-item"><i class="fas fa-medal"></i> 12 Skills Validated</div>
-        </div>
-        <div class="dropdown-actions">
-          <a href="../passport/passport.php" class="dropdown-action">
-            <i class="fas fa-download"></i> Download Skills Passport (PDF)
-          </a>
-          <a href="../profile/profile.php" class="dropdown-action">
-            <i class="fas fa-user"></i> View Profile
-          </a>
-          <a href="../profile/profile.php" class="dropdown-action">
-            <i class="fas fa-gear"></i> Settings
-          </a>
-        </div>
-        <div class="dropdown-signout">
-          <a href="../../login/index.php" class="dropdown-action signout">
-            <i class="fas fa-right-from-bracket"></i> Sign Out
-          </a>
-        </div>
-      </div>
-    </header>
+$badge_counts = [];
+$stmt2 = $db->query("SELECT id_user, COUNT(*) as cnt FROM obtention_badges GROUP BY id_user");
+foreach ($stmt2->fetchAll() as $bc) {
+    $badge_counts[$bc['id_user']] = (int)$bc['cnt'];
+}
+foreach ($users as &$u) {
+    $u['badges_count'] = $badge_counts[$u['id_user']] ?? 0;
+}
+unset($u);
 
-    <main class="main-content classement-page">
-      <section class="rank-header">
-        <div>
-          <p class="eyebrow">Classement des Mentors</p>
-          <h1>Les meilleurs contributeurs de la communauté ISMO</h1>
-        </div>
-      </section>
+$stmt = $db->prepare("SELECT DISTINCT filiere FROM utilisateurs WHERE filiere IS NOT NULL AND filiere != '' ORDER BY filiere");
+$stmt->execute();
+$filieres = $stmt->fetchAll();
 
-      <section class="rank-cards">
-        <article class="rank-card highlight">
-          <div class="rank-card-title">
+$current_user_rank = 0;
+foreach ($users as $i => $u) {
+    if ($u['id_user'] == $id_user) {
+        $current_user_rank = $i + 1;
+        break;
+    }
+}
+
+$current_user_data = null;
+foreach ($users as $u) {
+    if ($u['id_user'] == $id_user) {
+        $current_user_data = $u;
+        break;
+    }
+}
+?>
+<section class="rank-header">
+    <div>
+        <p class="eyebrow">Classement des Stagiaires</p>
+        <h1>Les meilleurs contributeurs de la communauté ISMO</h1>
+    </div>
+</section>
+
+<section class="rank-cards">
+    <article class="rank-card highlight">
+        <div class="rank-card-title">
             <i class="fas fa-trophy"></i>
             <div>
-              <span>Ton Rang</span>
-              <p>Top 5% ce mois</p>
+                <span>Ton Rang</span>
+                <p><?= $current_user_rank > 0 ? '#' . $current_user_rank : 'Non classé' ?></p>
             </div>
-          </div>
-          <strong>#12</strong>
-        </article>
-        <article class="rank-card">
-          <div class="rank-card-title">
+        </div>
+        <strong>#<?= $current_user_rank ?: '-' ?></strong>
+    </article>
+    <article class="rank-card">
+        <div class="rank-card-title">
             <i class="fas fa-star"></i>
             <div>
-              <span>Tes Points</span>
-              <p>+85 cette semaine</p>
+                <span>Tes Points</span>
+                <p>Score actuel</p>
             </div>
-          </div>
-          <strong>1,245</strong>
-        </article>
-        <article class="rank-card">
-          <div class="rank-card-title">
-            <i class="fas fa-chart-line"></i>
+        </div>
+        <strong><?= htmlspecialchars($current_user_data['score'] ?? 0) ?></strong>
+    </article>
+    <article class="rank-card">
+        <div class="rank-card-title">
+            <i class="fas fa-medal"></i>
             <div>
-              <span>Progression</span>
-              <p>rangs cette semaine</p>
+                <span>Badges</span>
+                <p>Obtenus</p>
             </div>
-          </div>
-          <strong>+3</strong>
+        </div>
+        <strong><?= htmlspecialchars($current_user_data['badges_count'] ?? 0) ?></strong>
+    </article>
+</section>
+
+<section class="top-list-section">
+    <div class="list-header">
+        <h2>Classement général</h2>
+        <form method="GET">
+            <select name="filiere" onchange="this.form.submit()">
+                <option value="">Toutes les filières</option>
+                <?php foreach ($filieres as $f): ?>
+                <option value="<?= htmlspecialchars($f['filiere']) ?>" <?= $filiere_filter === $f['filiere'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($f['filiere']) ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+        </form>
+    </div>
+    <div class="top-list">
+        <?php $rank = 1; ?>
+        <?php foreach ($users as $u):
+            $init = strtoupper(substr($u['prenom'], 0, 1) . substr($u['nom'], 0, 1));
+            $is_me = $u['id_user'] == $id_user;
+            $avatar_class = $rank % 2 === 0 ? 'top-avatar secondary' : 'top-avatar';
+        ?>
+        <article class="top-list-item" style="<?= $is_me ? 'border-color:#2563eb;background:#eff6ff;' : '' ?>">
+            <div class="top-rank">#<?= $rank ?></div>
+            <div class="<?= $avatar_class ?>"><?= htmlspecialchars($init) ?></div>
+            <div class="top-info">
+                <strong><?= htmlspecialchars($u['prenom'] . ' ' . $u['nom']) ?></strong>
+                <span><?= $u['filiere'] ? htmlspecialchars($u['filiere']) : 'Non spécifié' ?></span>
+            </div>
+            <div class="top-score">
+                <span><?= htmlspecialchars(number_format($u['score'])) ?></span>
+                <small><?= htmlspecialchars($u['badges_count']) ?> badges</small>
+            </div>
         </article>
-      </section>
+        <?php $rank++; endforeach; ?>
+    </div>
+</section>
 
-      <section class="top-list-section">
-        <div class="list-header">
-          <h2>Top 10 Mentors - Mai 2024</h2>
-          <select>
-            <option>Ce mois</option>
-            <option>Cette semaine</option>
-            <option>Ce trimestre</option>
-          </select>
-        </div>
-        <div class="top-list">
-          <article class="top-list-item">
-            <div class="top-rank">#1</div>
-            <div class="top-avatar">AC</div>
-            <div class="top-info">
-              <strong>Alice Chen</strong>
-              <span>Dev Web & Mobile</span>
-            </div>
-            <div class="top-score">
-              <span>2 450</span>
-              <small>12 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#2</div>
-            <div class="top-avatar">BM</div>
-            <div class="top-info">
-              <strong>Bob Martinez</strong>
-              <span>Data Engineering</span>
-            </div>
-            <div class="top-score">
-              <span>2 180</span>
-              <small>10 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#3</div>
-            <div class="top-avatar">CW</div>
-            <div class="top-info">
-              <strong>Carol Wang</strong>
-              <span>Dev Digital</span>
-            </div>
-            <div class="top-score">
-              <span>1 950</span>
-              <small>9 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#4</div>
-            <div class="top-avatar secondary">DL</div>
-            <div class="top-info">
-              <strong>David Lee</strong>
-              <span>Infrastructure</span>
-            </div>
-            <div class="top-score">
-              <span>1 720</span>
-              <small>8 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#5</div>
-            <div class="top-avatar">EG</div>
-            <div class="top-info">
-              <strong>Eva Garcia</strong>
-              <span>Dev Web & Mobile</span>
-            </div>
-            <div class="top-score">
-              <span>1 580</span>
-              <small>7 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#6</div>
-            <div class="top-avatar">FA</div>
-            <div class="top-info">
-              <strong>Frank Ahmed</strong>
-              <span>Dev Digital</span>
-            </div>
-            <div class="top-score">
-              <span>1 420</span>
-              <small>7 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#7</div>
-            <div class="top-avatar">GK</div>
-            <div class="top-info">
-              <strong>Grace Kim</strong>
-              <span>Data Engineering</span>
-            </div>
-            <div class="top-score">
-              <span>1 250</span>
-              <small>6 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#8</div>
-            <div class="top-avatar">HO</div>
-            <div class="top-info">
-              <strong>Hassan Omar</strong>
-              <span>Infrastructure</span>
-            </div>
-            <div class="top-score">
-              <span>1 180</span>
-              <small>6 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#9</div>
-            <div class="top-avatar">IS</div>
-            <div class="top-info">
-              <strong>Iris Santos</strong>
-              <span>Dev Web & Mobile</span>
-            </div>
-            <div class="top-score">
-              <span>1 050</span>
-              <small>5 badges</small>
-            </div>
-          </article>
-          <article class="top-list-item">
-            <div class="top-rank">#10</div>
-            <div class="top-avatar">JT</div>
-            <div class="top-info">
-              <strong>Jack Taylor</strong>
-              <span>Dev Digital</span>
-            </div>
-            <div class="top-score">
-              <span>980</span>
-              <small>5 badges</small>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="rank-banner">
-        <div>
-          <h2>Niveau Actuel: Contributeur Actif</h2>
-          <p>1,245 points</p>
-        </div>
-        <div class="progress-bar">
-          <div class="progress" style="width: 68%"></div>
-        </div>
-      </section>
-    </main>
-  </div>
-  <script>
-    const profileToggle = document.getElementById('profileToggle');
-    const profileMenu   = document.getElementById('profileMenu');
-    const chevronIcon   = document.getElementById('chevronIcon');
-    profileToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      profileMenu.classList.toggle('open');
-      chevronIcon.classList.toggle('rotated');
-    });
-    document.addEventListener('click', (e) => {
-      if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
-        profileMenu.classList.remove('open');
-        chevronIcon.classList.remove('rotated');
-      }
-    });
-  </script>
-</body>
-
-</html>
+<section class="rank-banner">
+    <div>
+        <h2>Continue comme ça !</h2>
+        <p><?= htmlspecialchars(number_format($current_user_data['score'] ?? 0)) ?> points</p>
+    </div>
+    <div class="progress-bar">
+        <div class="progress" style="width: <?= min(100, ($current_user_data['score'] ?? 0) / 100) ?>%"></div>
+    </div>
+</section>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

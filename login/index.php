@@ -1,39 +1,41 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+session_start();
+if(isset($_SESSION['id_user'])){
+    $p = ['stagiaire'=>'/phpprojet/stagiaire/accueil/accueil.php','mentor'=>'/phpprojet/mentor/accueil/accueil.php','formateur'=>'/phpprojet/formateur/accueil/accueil.php','admin'=>'/phpprojet/admin/accueil/accueil.php'];
+    header('Location: '.$p[$_SESSION['role']]);
+    exit;
+}
+include("../dbopen/db.php");
+$err = [];
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])){
     extract($_POST);
-    if (isset($login)) {
-        $err = [];
-        if (!isset($email) || $email == "") $err["email"] = "l'email est invalide";
-        if (!isset($motdepasse) || $motdepasse == "") $err["motdepasse"] = "le mot de passe est invalide";
-        if (empty($err)){
-            $email = htmlspecialchars($email);
-            $motdepasse = hash('sha256', $motdepasse);
-            include("../dbopen/db.php");
-            try {
-                $reqi=$db->prepare("SELECT role FROM utilisateurs WHERE email=? AND motdepasse=?");
-                $r=$reqi->execute([$email,$motdepasse]);
-                $user = $reqi->fetch(PDO::FETCH_ASSOC);
-                if($user==false) $err["errconnection"]="erreur de connexion";
-                else {
-                if ($user) {
-                $role = $user['role'];
-                if ($role == "admin") {
-                    header("Location: ../admin/accueil/accueil.php");
-                    exit;
-                } elseif ($role == "formateur") {
-                    header("Location: ../formateur/accueil/accueil.php");
-                    exit;
-                } elseif ($role == "stagiaire") {
-                    header("Location: ../stagiaire/accueil/accueil.php");
-                    exit;
-                } else {
-                    $err["errconnection"] = "Utilisateur introuvable ou login incorrect";
-                }
-               }
-              }
-            }catch (PDOException $e) {
-                echo "Erreur: " . $e->getMessage();
-              }
+    $email = trim(isset($email) ? $email : '');
+    $motdepasse = isset($motdepasse) ? $motdepasse : '';
+    if(empty($email)) $err['email'] = "L'email est obligatoire";
+    if(empty($motdepasse)) $err['motdepasse'] = "Le mot de passe est obligatoire";
+    if(empty($err)){
+        $req = $db->prepare("SELECT * FROM utilisateurs WHERE email=?");
+        $req->execute([$email]);
+        $user = $req->fetch();
+        if($user && password_verify($motdepasse, $user['motdepasse'])){
+            if(!$user['valide']){
+                $err['auth'] = "Compte en attente de validation par un administrateur.";
+            }else{
+                $_SESSION['id_user'] = $user['id_user'];
+                $_SESSION['nom'] = $user['nom'];
+                $_SESSION['prenom'] = $user['prenom'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['filiere'] = $user['filiere'] ?? '';
+                $_SESSION['photo'] = $user['photo'] ?? '';
+                $_SESSION['date_inscription'] = $user['date_inscription'] ?? date('Y-m-d');
+                $_SESSION['score'] = $user['score'] ?? 0;
+                $p = ['stagiaire'=>'/phpprojet/stagiaire/accueil/accueil.php','mentor'=>'/phpprojet/mentor/accueil/accueil.php','formateur'=>'/phpprojet/formateur/accueil/accueil.php','admin'=>'/phpprojet/admin/accueil/accueil.php'];
+                header('Location: '.$p[$user['role']]);
+                exit;
+            }
+        }else{
+            $err['auth'] = "Email ou mot de passe incorrect";
         }
     }
 }
@@ -59,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           <p>Plateforme d'entraide pour les stagiaires de l'ISMO Tétouan</p>
         </div>
       </div>
-
       <ul class="features">
         <li>
           <div class="ico">👥</div>
@@ -84,48 +85,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </li>
       </ul>
     </aside>
-
     <main class="right">
       <div class="card">
         <h3>Bienvenue</h3>
         <p class="sub">Connecte-toi pour continuer</p>
-
-        <form id="loginForm" method="POST">
+        <form method="POST">
           <label class="field">
             <span class="label">Email</span>
-            <input name="email" type="email" placeholder="votre.email@ismo.ma" >
-            <?php if (isset($err["email"])) echo "<div style='color:red'>" . $err["email"] . "</div>"; ?>
+            <input name="email" type="email" placeholder="votre.email@ismo.ma" value="<?= htmlspecialchars(isset($email) ? $email : '') ?>">
+            <?php if(isset($err['email'])): ?><div class="field-error"><?= $err['email'] ?></div><?php endif; ?>
           </label>
-
           <label class="field">
             <span class="label">Mot de passe</span>
-            <input id="motdepasse" name="motdepasse" type="password" placeholder="••••••••">
-            <?php if (isset($err["motdepasse"])) echo "<div style='color:red'>" . $err["motdepasse"] . "</div>"; ?>
+            <input name="motdepasse" type="password" placeholder="••••••••">
+            <?php if(isset($err['motdepasse'])): ?><div class="field-error"><?= $err['motdepasse'] ?></div><?php endif; ?>
           </label>
-
           <label class="checkbox">
-            <input id="showPass" type="checkbox"> Afficher le mot de passe
+            <input type="checkbox" onclick="var p=document.querySelector('[name=motdepasse]'); p.type=this.checked?'text':'password';"> Afficher le mot de passe
           </label>
-
+          <?php if(isset($err['auth'])): ?><div class="field-error" style="margin-bottom:12px"><?= $err['auth'] ?></div><?php endif; ?>
           <button class="btn primary" name="login" type="submit">Se connecter</button>
         </form>
         <p class="signup">Pas encore de compte ? <a href="../inscription/index.php">S'inscrire</a></p>
       </div>
     </main>
   </div>
-
-  <script>
-    document.getElementById('showPass').addEventListener('change', function(e){
-      const pw = document.getElementById('motdepasse');
-      pw.type = this.checked ? 'text' : 'password';
-    });
-
-    document.querySelectorAll('.demo').forEach(btn=>{
-      btn.addEventListener('click', function(){
-        document.getElementById('email').value = this.dataset.email;
-        document.getElementById('motdepasse').value = this.dataset.pass;
-      });
-    });
-  </script>
 </body>
 </html>

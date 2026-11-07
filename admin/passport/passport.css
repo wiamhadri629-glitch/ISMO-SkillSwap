@@ -1,12 +1,4 @@
-:root {
-  --mod-bg: #f8fbff;
-  --mod-surface: #ffffff;
-  --mod-border: #e5e7eb;
-  --mod-muted: #64748b;
-  --mod-red: #ef4444;
-  --mod-green: #16a34a;
-}
-
+/* Admin Moderation Passport */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -43,10 +35,6 @@
   box-shadow: 0 12px 30px rgba(239, 68, 68, 0.22);
 }
 
-.main-content {
-  padding: 32px 40px;
-}
-
 .page-top {
   margin-bottom: 28px;
 }
@@ -59,7 +47,7 @@
 .page-copy {
   margin: 14px 0 0;
   max-width: 580px;
-  color: var(--mod-muted);
+  color: #64748b;
   font-size: 15px;
 }
 
@@ -69,8 +57,8 @@
 }
 
 .reported-card {
-  background: var(--mod-surface);
-  border: 1px solid var(--mod-border);
+  background: #fff;
+  border: 1px solid #e5e7eb;
   border-radius: 24px;
   padding: 24px;
   display: grid;
@@ -98,7 +86,7 @@
 
 .reported-meta small {
   display: block;
-  color: var(--mod-muted);
+  color: #64748b;
   font-size: 12px;
   margin-top: 2px;
 }
@@ -138,7 +126,7 @@
 
 .reported-body p {
   margin: 0;
-  color: var(--mod-muted);
+  color: #64748b;
   font-size: 14px;
 }
 
@@ -173,14 +161,7 @@
 }
 
 @media (max-width: 900px) {
-  .page-top {
-    flex-direction: column;
-  }
-  .reported-head {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .reported-actions {
-    flex-direction: column;
-  }
+  .page-top { flex-direction: column; }
+  .reported-head { flex-direction: column; align-items: stretch; }
+  .reported-actions { flex-direction: column; }
 }
