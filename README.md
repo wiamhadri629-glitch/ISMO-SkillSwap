@@ -35,7 +35,7 @@ My contribution included:
 Project Information
 - Project Type: Academic Team Project
 - Institution: ISMO Tétouan – OFPPT
-- Duration: 20/04/2025 – 26/06/2025
+- Duration: 20/04/2026 – 28/06/2026
 - Team Size: 5 members
 Installation and Setup
 1. Clone the repository.
